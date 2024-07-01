@@ -7,10 +7,17 @@
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "stylelint:fix": "stylelint '**/*.{css,scss,vue,html}' --fix",
+    "eslint:fix": "eslint . --ext .vue,.js,.cjs,.mjs,.ts,.mts,.jsx,.tsxx --fix --cache",
+    "eslint": "eslint . --ext .vue,.js,.cjs,.mjs,.ts,.mts,.jsx,.tsx",
+    "stylelint": "stylelint  '**/*.{css,scss,vue,html}'",
+    "lint": "yarn stylelint -f json > stylelint-report.json && yarn eslint -f json -o eslint-report.json"
   },
   "dependencies": {
-    "vue": "^3.4.29"
+    "three": "^0.166.0",
+    "vue": "^3.4.29",
+    "vue-router": "4"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",

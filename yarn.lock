@@ -687,6 +687,11 @@
     "@vue/compiler-dom" "3.4.30"
     "@vue/shared" "3.4.30"
 
+"@vue/devtools-api@^6.5.1":
+  version "6.6.3"
+  resolved "https://registry.npmmirror.com/@vue/devtools-api/-/devtools-api-6.6.3.tgz#b23a588154cba8986bba82b6e1d0248bde3fd1a0"
+  integrity sha512-0MiMsFma/HqA6g3KLKn+AGpL1kgKhFWszC9U29NfpWK5LE7bjeXxySWJrOJ77hBz+TBrBQ7o4QJqbPbqbs8rJw==
+
 "@vue/language-core@2.0.22":
   version "2.0.22"
   resolved "https://registry.yarnpkg.com/@vue/language-core/-/language-core-2.0.22.tgz#2f8164ecc83f85f27301521d0a6ce37cc59bb23a"
@@ -2596,16 +2601,7 @@ postcss-value-parser@^4.2.0:
   resolved "https://registry.npmmirror.com/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz#723c09920836ba6d3e5af019f92bc0971c02e514"
   integrity sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==
 
-postcss@^8.4.0, postcss@^8.4.32:
-  version "8.4.38"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.38.tgz#b387d533baf2054288e337066d81c6bee9db9e0e"
-  integrity sha512-Wglpdk03BSfXkHoQa3b/oulrotAkwrlLDRSOb9D0bN86FdRyE9lppSp33aHNPgBa0JKCoB+drFLZkQoRRYae5A==
-  dependencies:
-    nanoid "^3.3.7"
-    picocolors "^1.0.0"
-    source-map-js "^1.2.0"
-
-postcss@^8.4.38:
+postcss@^8.4.0, postcss@^8.4.32, postcss@^8.4.38:
   version "8.4.38"
   resolved "https://registry.npmmirror.com/postcss/-/postcss-8.4.38.tgz#b387d533baf2054288e337066d81c6bee9db9e0e"
   integrity sha512-Wglpdk03BSfXkHoQa3b/oulrotAkwrlLDRSOb9D0bN86FdRyE9lppSp33aHNPgBa0JKCoB+drFLZkQoRRYae5A==
@@ -3053,6 +3049,11 @@ text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==
 
+three@^0.166.0:
+  version "0.166.0"
+  resolved "https://registry.npmmirror.com/three/-/three-0.166.0.tgz#8baa462b03430a87bdcbfed850f4d30fae0359f1"
+  integrity sha512-3Gw7oyZ/vCmz3RmNx1xuyNu7Ou/igDtoh953QsJh/QkAoi6B7jpkKwk05N8Y7/9bZeIE44zdC+i2KZNF+KWQ8A==
+
 "through@>=2.2.7 <3", through@^2.3.6:
   version "2.3.8"
   resolved "https://registry.npmmirror.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
@@ -3159,6 +3160,13 @@ vue-eslint-parser@^9.4.2:
     esquery "^1.4.0"
     lodash "^4.17.21"
     semver "^7.3.6"
+
+vue-router@4:
+  version "4.4.0"
+  resolved "https://registry.npmmirror.com/vue-router/-/vue-router-4.4.0.tgz#128e3fc0c84421035a9bd26027245e6bd68f69ab"
+  integrity sha512-HB+t2p611aIZraV2aPSRNXf0Z/oLZFrlygJm+sZbdJaW6lcFqEDQwnzUBXn+DApw+/QzDU/I9TeWx9izEjTmsA==
+  dependencies:
+    "@vue/devtools-api" "^6.5.1"
 
 vue-template-compiler@^2.7.14:
   version "2.7.16"

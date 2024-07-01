@@ -1,9 +1,0 @@
-*.d.ts
-build/*
-es/*
-dist/*
-*.js
-*.test.js
-node_modules/*
-./node_modules/**
-**/node_modules/**
