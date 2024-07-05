@@ -19,18 +19,19 @@ const slots = useSlots();
 </script>
 <style lang="scss" scoped>
 .status-container {
-  // padding: 0.2rem;
+  --body-text-color: #0ff37b;
+  --border-frame-color: #2ae3f3;
+  --background-color: rgba(7, 85, 140, 0.3);
+  --boder-color: rgba(99, 145, 180, 0.6);
+  --box-shadow-color: rgba(5, 157, 222, 0.25);
+  --header-background-color: rgba(7, 85, 140, 0.5);
   position: relative;
   box-sizing: border-box;
   color: #fff;
   text-align: center;
-
   backdrop-filter: blur(1px);
-  // background: rgba(255, 255, 255, 0);
-  // border: 1px solid #07548c;
-  border: 1px solid rgba(99, 145, 180, 0.59);
-  // box-shadow: 0px -12px 40px 3px rgba(5, 158, 222, 0.22);
-  box-shadow: inset 0 0 30px rgba(5, 158, 222, 0.35);
+  border: 1px solid var(--boder-color);
+  box-shadow: inset 0 0 30px var(--box-shadow-color);
   .header {
     display: flex;
     align-items: center;
@@ -38,8 +39,8 @@ const slots = useSlots();
     padding: 4px 8px;
     font-size: 0.16rem;
     line-height: 0.3rem;
-    background: rgba(7, 84, 140, 0.3);
-    // margin-bottom: 8px;
+    background-color: var(--header-background-color);
+
     &::after,
     &::before {
       display: block;
@@ -60,42 +61,33 @@ const slots = useSlots();
   .body {
     padding: 12px;
     font-size: 0.2rem;
+    color: var(--body-text-color);
   }
   &.status-success {
-    .body {
-      color: #0ff37b;
-    }
+    --body-text-color: #0ff37b;
   }
-  --border-frame-color: #2ae3f3;
   &.status-error {
-    .body {
-      color: #ff3701;
-    }
-    .header {
-      background-color: rgba(255, 5, 5, 0.1);
-    }
-    background-color: rgba(255, 5, 5, 0.1);
-    border: 1px solid rgba(255, 5, 5, 0.3);
-    box-shadow: inset 0 0 30px rgba(255, 5, 5, 0.25);
-    --border-frame-color: #ff3701;
+    --body-text-color: rgba(255, 5, 1, 1);
+    --border-frame-color: rgba(255, 5, 5, 1);
+    --background-color: rgba(255, 5, 1, 0.1);
+    --boder-color: rgba(255, 5, 1, 0.6);
+    --box-shadow-color: rgba(255, 5, 1, 0.3);
+    --header-background-color: rgba(255, 5, 1, 0.2);
   }
   &.status-container-frame {
     background:
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -3px top 0,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -3px top -3px,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -3px top 0,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -3px top -3px,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -3px bottom 0,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -3px bottom -3px,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -3px bottom 0,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -3px bottom -3px;
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -4px top -18px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -4px top -4px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -4px top -18px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -4px top -4px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -4px bottom -18px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -4px bottom -4px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -4px bottom -18px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -4px bottom -4px;
     background-repeat: no-repeat;
-    // background-size:
-    //   20px 20px,
-    //   20px 20px;
     background-size:
-      3px 16px,
-      16px 3px;
+      4px 22px,
+      22px 4px;
     .header {
       background-color: transparent;
     }

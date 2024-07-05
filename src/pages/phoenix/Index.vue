@@ -5,7 +5,7 @@
         <div class="title">菲尼克斯电气数字孪生平台</div>
       </Header>
     </template>
-    <template #left>
+    <template #left v-if="showMask">
       <div class="panels">
         <Card title="空压机">
           <div class="status-list col-3">
@@ -17,8 +17,6 @@
         <Card title="波峰焊">
           <div class="status-list col-3">
             <Status v-for="i in 8" :status="i == 5 ? 'error' : 'success'" :frame="true" :key="i">
-              <!-- <template #title>波峰焊{{ i }}</template>
-              状态{{ i == 5 ? '异常' : '正常' }} -->
               <div class="status">
                 <div class="title">波峰焊{{ i }}</div>
                 <div class="body">状态{{ i == 5 ? '异常' : '正常' }}</div>
@@ -28,7 +26,7 @@
         </Card>
       </div>
     </template>
-    <template #right>
+    <template #right v-if="showMask">
       <div class="panels">
         <Card title="注塑机">
           <div class="status-list col-2">
@@ -54,7 +52,7 @@
     </template>
     <template #main>
       <Scene />
-      <div class="mask"></div>
+      <div v-if="showMask" class="mask"></div>
     </template>
   </LayoutScreen>
 </template>
@@ -64,6 +62,9 @@ import Header from '@/pages/components/Header.vue';
 import Card from '@/components/Card.vue';
 import Status from '@/components/charts/Status.vue';
 import Scene from './Scene.vue';
+import { ref } from 'vue';
+
+const showMask = ref(true);
 </script>
 <style lang="scss" scoped>
 .panels {
