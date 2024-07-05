@@ -1,5 +1,5 @@
 <template>
-  <div class="card-container">
+  <div :class="['card-container', backgroud ? 'card-background' : '']">
     <div class="card-header">
       <div class="icon">
         <slot name="icon">
@@ -17,15 +17,30 @@
 </template>
 <script setup lang="ts">
 import { VNode } from 'vue';
-
-defineProps<{
-  title?: string;
-  icon?: VNode;
-}>();
+withDefaults(
+  defineProps<{
+    title?: string;
+    icon?: VNode;
+    backgroud?: boolean;
+  }>(),
+  {
+    title: '',
+    icon: undefined,
+    backgroud: false,
+  }
+);
 </script>
 <style lang="scss" scoped>
 .card-container {
   position: relative;
+  backdrop-filter: blur(1px);
+
+  border: 1px solid transparent;
+  // padding: 8px 12px;
+  &.card-background {
+    // background-color: rgb(7, 84, 140, 0.3);
+    background-color: rgba(0, 34, 51, 0.2);
+  }
   .card-header {
     position: relative;
     display: flex;

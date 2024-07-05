@@ -14,6 +14,7 @@
         <slot name="main" />
       </div>
     </div>
+    <slot name="progress"></slot>
   </div>
 </template>
 <script setup lang="ts"></script>
@@ -23,21 +24,32 @@
   height: 100vh;
   // opacity: 0.4;
 
-  background: rgba(181, 179, 179, 0.4);
+  background: #121328cc;
   &-content {
     width: 100vw;
     height: 100vh;
     &-left {
       position: absolute;
       top: 1rem;
+      bottom: 0.2rem;
       left: 0.2rem;
+      z-index: 100;
+      display: flex;
+      grid-gap: 10px;
       width: 25vw;
+      transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+      // height: calc(100% - 1rem);
     }
     &-right {
       position: absolute;
       top: 1rem;
       right: 0.2rem;
+      bottom: 0.2rem;
+      z-index: 100;
+      display: flex;
+      grid-gap: 10px;
       width: 25vw;
+      transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
     }
     &-main {
       width: 100%;
@@ -48,7 +60,7 @@
   &-header {
     position: absolute;
     top: 0;
-    z-index: 1;
+    z-index: 100;
     width: 100%;
     &--container {
       position: relative;

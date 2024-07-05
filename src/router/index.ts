@@ -8,7 +8,7 @@ export const routes = [
     name: 'phoenix',
     path: '/Phoenix',
     meta: { title: '菲尼克斯电气数字孪生平台' },
-    component: () => import('@/pages/Phoenix.vue'),
+    component: () => import('@/pages/phoenix/Index.vue'),
   },
 ];
 
