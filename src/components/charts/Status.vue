@@ -70,7 +70,7 @@ const slots = useSlots();
     --body-text-color: rgba(255, 5, 1, 1);
     --border-frame-color: rgba(255, 5, 5, 1);
     --background-color: rgba(255, 5, 1, 0.1);
-    --boder-color: rgba(255, 5, 1, 0.6);
+    --boder-color: rgba(255, 5, 1, 0.3);
     --box-shadow-color: rgba(255, 5, 1, 0.3);
     --header-background-color: rgba(255, 5, 1, 0.2);
   }
