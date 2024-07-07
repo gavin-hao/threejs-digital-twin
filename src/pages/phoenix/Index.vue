@@ -9,17 +9,29 @@
       <div class="panels">
         <Card title="空压机">
           <div class="status-list col-3">
-            <Status v-for="i in 7" :status="i == 3 ? 'error' : 'success'" :title="`空压机${i}`" :key="i">
-              状态{{ i == 3 ? '异常' : '正常' }}
+            <Status
+              v-for="i in 9"
+              :status="i == errorN.kongyaji ? 'error' : 'success'"
+              :title="`空压机_0${i}`"
+              :key="i"
+              @click="handleClickStatus(`kongyaji_0${i}`)"
+            >
+              状态{{ errorN.kongyaji ? '异常' : '正常' }}
             </Status>
           </div>
         </Card>
         <Card title="波峰焊">
           <div class="status-list col-3">
-            <Status v-for="i in 8" :status="i == 5 ? 'error' : 'success'" :frame="true" :key="i">
+            <Status
+              v-for="i in 8"
+              :status="i == errorN.bofenghan ? 'error' : 'success'"
+              :frame="true"
+              :key="i"
+              @click="handleClickStatus(`bofenghan_0${i}`)"
+            >
               <div class="status">
                 <div class="title">波峰焊{{ i }}</div>
-                <div class="body">状态{{ i == 5 ? '异常' : '正常' }}</div>
+                <div class="body">状态{{ i == errorN.bofenghan ? '异常' : '正常' }}</div>
               </div>
             </Status>
           </div>
@@ -30,20 +42,32 @@
       <div class="panels">
         <Card title="注塑机">
           <div class="status-list col-2">
-            <Status v-for="i in 8" :status="i == 5 ? 'error' : 'success'" :key="i" :frame="true">
+            <Status
+              v-for="i in 5"
+              :status="i == errorN.zhusuji ? 'error' : 'success'"
+              :key="i"
+              :frame="true"
+              @click="handleClickStatus(`zhusuji_0${i}`)"
+            >
               <div class="status flex">
-                <span class="title">注塑机{{ i }}</span>
-                <span class="body">状态{{ i == 5 ? '异常' : '正常' }}</span>
+                <span class="title">注塑机_0{{ i }}</span>
+                <span class="body">状态{{ i == errorN.zhusuji ? '异常' : '正常' }}</span>
               </div>
             </Status>
           </div>
         </Card>
         <Card title="冲压机">
           <div class="status-list col-2">
-            <Status v-for="i in 8" :status="i == 5 ? 'error' : 'success'" :frame="false" :key="i">
+            <Status
+              v-for="i in 8"
+              :status="i == errorN.chongyaji ? 'error' : 'success'"
+              :frame="false"
+              :key="i"
+              @click="handleClickStatus(`chongyaji_0${i}`)"
+            >
               <div class="status">
-                <div class="title">冲压机{{ i }}</div>
-                <div class="body">状态{{ i == 5 ? '异常' : '正常' }}</div>
+                <div class="title">冲压机_0{{ i }}</div>
+                <div class="body">状态{{ i == errorN.chongyaji ? '异常' : '正常' }}</div>
               </div>
             </Status>
           </div>
@@ -51,7 +75,7 @@
       </div>
     </template>
     <template #main>
-      <Scene />
+      <Scene :data="errorN" ref="sceneRef" />
       <div v-if="showMask" class="mask"></div>
     </template>
   </LayoutScreen>
@@ -62,9 +86,45 @@ import Header from '@/pages/components/Header.vue';
 import Card from '@/components/Card.vue';
 import Status from '@/components/charts/Status.vue';
 import Scene from './Scene.vue';
-import { ref } from 'vue';
-
+import { onUnmounted, ref } from 'vue';
+const sceneRef = ref();
 const showMask = ref(true);
+const errorN = ref<{
+  chongyaji: number;
+  bofenghan: number;
+  zhusuji: number;
+  kongyaji: number;
+}>({
+  chongyaji: 0,
+  bofenghan: 1,
+  zhusuji: 5,
+  kongyaji: 6,
+});
+const timer1 = setInterval(() => {
+  const n = ~~(Math.random() * 100) % 9;
+  errorN.value.kongyaji = n;
+}, 500000);
+const timer2 = setInterval(() => {
+  const n = ~~(Math.random() * 100) % 9;
+  errorN.value.bofenghan = n;
+}, 15000);
+const timer3 = setInterval(() => {
+  const n = ~~(Math.random() * 100) % 9;
+  errorN.value.zhusuji = n;
+}, 30000);
+const timer4 = setInterval(() => {
+  const n = ~~(Math.random() * 100) % 9;
+  errorN.value.chongyaji = n;
+}, 10000);
+onUnmounted(() => {
+  clearInterval(timer1);
+  clearInterval(timer2);
+  clearInterval(timer3);
+  clearInterval(timer4);
+});
+const handleClickStatus = (name: string) => {
+  sceneRef.value?.focusTo(name);
+};
 </script>
 <style lang="scss" scoped>
 .panels {

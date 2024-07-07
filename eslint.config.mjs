@@ -72,6 +72,7 @@ export default [
       'no-console': 'off',
       'no-debugger': 'off',
       'vue/multi-word-component-names': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {

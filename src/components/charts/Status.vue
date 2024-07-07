@@ -29,6 +29,7 @@ const slots = useSlots();
   box-sizing: border-box;
   color: #fff;
   text-align: center;
+  cursor: pointer;
   backdrop-filter: blur(1px);
   border: 1px solid var(--boder-color);
   box-shadow: inset 0 0 30px var(--box-shadow-color);

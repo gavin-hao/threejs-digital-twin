@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-// import { CSS2DRenderer, OrbitControls } from 'three/examples/jsm/Addons.js';
 export interface Updatable {
   key?: string;
   update(deltaTime: number): void;
@@ -34,10 +33,10 @@ class Loop {
     }
     //start render loop
     this.renderer.setAnimationLoop(() => {
-      // tell every animated object to tick forward one frame
-      this.update();
       // render a frame
       this.renderer.render(this.scene, this.camera);
+      // tell every animated object to tick forward one frame
+      this.update();
     });
   }
   stop() {

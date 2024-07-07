@@ -21,6 +21,7 @@ export function initCSSRender(element: HTMLElement) {
   CSSRenderer.setSize(element.clientWidth, element.clientHeight);
   CSSRenderer.domElement.style.position = 'absolute';
   CSSRenderer.domElement.style.top = '0px';
+  // CSSRenderer.domElement.style.pointerEvents = 'none';
   element.appendChild(CSSRenderer.domElement);
   return CSSRenderer;
 }
