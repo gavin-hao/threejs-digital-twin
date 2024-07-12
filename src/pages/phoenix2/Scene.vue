@@ -43,6 +43,7 @@ import * as THREE from 'three';
 import { Object3DWrap } from '@/hooks/useThree/Object3dWrap';
 import { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+import Stats from 'three/addons/libs/stats.module.js';
 import {
   CSS2DObject,
   EffectComposer,
@@ -52,7 +53,21 @@ import {
   // SMAAPass,
 } from 'three/examples/jsm/Addons.js';
 import { useContext } from './context';
-let player: Player;
+
+const player = new Player();
+
+if (process.env.NODE_ENV === 'development') {
+  const stats = new Stats();
+  stats.dom.style.position = 'absolute';
+
+  player.events.update.add(() => stats.update());
+  onMounted(() => {
+    viewport.value!.appendChild(stats.dom);
+  });
+}
+
+const gui = new GUI();
+
 const viewport = ref<HTMLElement>();
 const popoverRef = ref<HTMLElement>();
 const warnIconRef = ref<HTMLElement>();
@@ -65,65 +80,74 @@ const equipmentInfos = computed(() => {
   return [...context.bofenghan.value, ...context.chongyaji.value, ...context.kongyaji.value, ...context.zhusuji.value];
 });
 let composer: EffectComposer, outlinePass: OutlinePass;
-// const effectParams = {
-//   edgeStrength: 20.0,
-//   edgeGlow: 1,
-//   edgeThickness: 3.0,
-//   pulsePeriod: 2.0,
-//   rotate: false,
-//   usePatternTexture: false,
-//   visibleEdgeColor: '#E93204',
-//   hiddenEdgeColor: '#190a05',
-// };
-const gui = new GUI();
+const effectParams = {
+  edgeStrength: 30.0,
+  edgeGlow: 0.1,
+  edgeThickness: 1,
+  pulsePeriod: 3.0,
+  rotate: false,
+  usePatternTexture: false,
+  visibleEdgeColor: '#d9af17', //'#E93204',
+  hiddenEdgeColor: '#190a05',
+};
+
 onMounted(async () => {
   intersectObjects = [];
-  player = new Player();
 
   player.setSize(viewport.value!.offsetWidth, viewport.value!.offsetHeight);
   player.setPixelRatio(window.devicePixelRatio);
 
   viewport.value!.appendChild(player.dom);
+
   context.events.warn.add(showWarnIcon);
   context.events.focusTo.add(handleFocusTo);
+
   player.addCSS2DRenderer();
   player.addCSS3Renderer();
   player.addControls();
   player.addLight();
-  const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-  pointLight.position.set(0, 5, 0);
-  pointLight.castShadow = true; // default false
+  // const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+  // pointLight.position.set(0, 5, 0);
+  // pointLight.castShadow = true; // default false
 
-  const lightPanel = gui.addFolder('PointLight');
-  lightPanel.add(pointLight, 'intensity', 0, 50).name('intensity');
-  lightPanel.add(pointLight, 'intensity', 0, 50).name('intensity');
-  lightPanel.add(pointLight.position, 'x').name('position.x');
-  lightPanel.add(pointLight.position, 'y').name('position.y');
-  lightPanel.add(pointLight.position, 'z').name('position.z');
-  lightPanel.addColor(pointLight, 'color').onChange(function (value) {
-    pointLight.color.set(value);
-  });
+  // const lightPanel = gui.addFolder('PointLight');
+  // lightPanel.add(pointLight, 'intensity', 0, 50).name('intensity');
+  // lightPanel.add(pointLight, 'intensity', 0, 50).name('intensity');
+  // lightPanel.add(pointLight.position, 'x').name('position.x');
+  // lightPanel.add(pointLight.position, 'y').name('position.y');
+  // lightPanel.add(pointLight.position, 'z').name('position.z');
+  // lightPanel.addColor(pointLight, 'color').onChange(function (value) {
+  //   pointLight.color.set(value);
+  // });
   if (process.env.NODE_ENV !== 'development') {
     gui.hide();
   }
   //Set up shadow properties for the light
-  pointLight.shadow.mapSize.width = 512; // default
-  pointLight.shadow.mapSize.height = 512; // default
-  pointLight.shadow.camera.near = 0.5; // default
-  pointLight.shadow.camera.far = 500; // default
+  // pointLight.shadow.mapSize.width = 512; // default
+  // pointLight.shadow.mapSize.height = 512; // default
+  // pointLight.shadow.camera.near = 0.5; // default
+  // pointLight.shadow.camera.far = 500; // default
 
-  player.addLight(pointLight);
+  // player.addLight(pointLight);
   player.scene.fog = new THREE.Fog(0xcccccc, 2, 100);
   composer = new EffectComposer(player.renderer!);
+  player.events.resize.add((width, height) => {
+    composer.setSize(width, height);
+  });
   const renderPass = new RenderPass(player.scene!, player.camera!);
   composer.addPass(renderPass);
-  outlinePass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), player.scene, player.camera!);
-  // outlinePass.visibleEdgeColor.set(effectParams.visibleEdgeColor);
-  // outlinePass.hiddenEdgeColor.set(effectParams.hiddenEdgeColor);
-  // outlinePass.pulsePeriod = effectParams.pulsePeriod;
-  // outlinePass.edgeGlow = effectParams.edgeGlow;
-  // outlinePass.edgeThickness = effectParams.edgeThickness;
-  // outlinePass.edgeStrength = effectParams.edgeStrength;
+  outlinePass = new OutlinePass(
+    new THREE.Vector2(player.cavans.clientWidth, player.cavans.clientHeight),
+    player.scene,
+    player.camera!
+  );
+  outlinePass.visibleEdgeColor.set(effectParams.visibleEdgeColor);
+  outlinePass.hiddenEdgeColor.set(effectParams.hiddenEdgeColor);
+  outlinePass.pulsePeriod = effectParams.pulsePeriod;
+  outlinePass.edgeGlow = effectParams.edgeGlow;
+  outlinePass.edgeThickness = effectParams.edgeThickness;
+  outlinePass.edgeStrength = effectParams.edgeStrength;
+  composer.addPass(outlinePass);
   const outputPass = new OutputPass();
   composer.addPass(outputPass);
   // const pixelRatio = player.renderer!.getPixelRatio();
@@ -132,11 +156,42 @@ onMounted(async () => {
   // const smaaPass = new SMAAPass(width * pixelRatio, height * pixelRatio);
   // composer.addPass(smaaPass);
   // 创建一个CSS3渲染器CSS3DRenderer
+  const effectPanel = gui.addFolder('effect');
+  effectPanel.add(effectParams, 'edgeStrength', 0.01, 50).onChange(function (value) {
+    outlinePass.edgeStrength = Number(value);
+  });
+
+  effectPanel.add(effectParams, 'edgeGlow', 0.0, 1).onChange(function (value) {
+    outlinePass.edgeGlow = Number(value);
+  });
+
+  effectPanel.add(effectParams, 'edgeThickness', 1, 50).onChange(function (value) {
+    outlinePass.edgeThickness = Number(value);
+  });
+
+  effectPanel.add(effectParams, 'pulsePeriod', 0, 5).onChange(function (value) {
+    outlinePass.pulsePeriod = Number(value);
+  });
+
+  effectPanel.add(effectParams, 'rotate');
+
+  effectPanel.add(effectParams, 'usePatternTexture').onChange(function (value) {
+    outlinePass.usePatternTexture = value;
+  });
+
+  effectPanel.addColor(effectParams, 'visibleEdgeColor').onChange(function (value) {
+    outlinePass.visibleEdgeColor.set(value);
+  });
+
+  effectPanel.addColor(effectParams, 'hiddenEdgeColor').onChange(function (value) {
+    outlinePass.hiddenEdgeColor.set(value);
+  });
 
   player.events.start.add(() => {
     console.log('start run play ');
   });
   player.events.update.add(() => {
+    // console.log('compser render', composer.passes);
     composer.render();
   });
 
@@ -247,14 +302,9 @@ function onSelected(object?: THREE.Object3D) {
   selectObject.add(popoverObject);
   chooseObject = selectObject;
   let current = equipmentInfos.value?.find((v) => v.key == selectObject.name);
-  const outlinedObjects: THREE.Object3D[] = [];
-  selectObject.traverse((item) => {
-    if (item.type === 'Mesh') {
-      outlinedObjects.push(item);
-    }
-  });
-  console.log('outlinedObjects', outlinedObjects);
-  outlinePass.selectedObjects = [...outlinedObjects];
+
+  // console.log('outlinedObjects', outlinedObjects);
+  outlinePass.selectedObjects = [selectObject];
   if (current) {
     selectedObjectInfo.value = {
       ...current,

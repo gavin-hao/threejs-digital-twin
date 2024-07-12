@@ -44,7 +44,7 @@ class PlayerControls extends THREE.EventDispatcher {
     const pos = new THREE.Vector3();
     target.getWorldPosition(pos);
     // 相机飞行到的位置和观察目标拉开一定的距离
-    const pos2 = pos.clone().addScalar(16);
+    const pos2 = pos.clone().addScalar(8);
 
     // const box = new THREE.Box3();
     // const center = new THREE.Vector3();

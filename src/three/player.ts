@@ -5,6 +5,9 @@ import { CSS2DRenderer, CSS3DRenderer } from 'three/examples/jsm/Addons.js';
 import PlayerControls from './controls';
 import Selector from './selector';
 import TWEEN from '@tweenjs/tween.js';
+
+// import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+
 const _DEFAULT_CAMERA = new THREE.PerspectiveCamera(50, 1, 0.01, 1000);
 _DEFAULT_CAMERA.name = 'Camera';
 _DEFAULT_CAMERA.position.set(0, 5, 10);
@@ -40,7 +43,7 @@ export class Player {
   selector: Selector;
   controls?: PlayerControls;
   private mixers: THREE.AnimationMixer[] = [];
-  // private ev = new signals.Signal();
+
   constructor() {
     this.dom = document.createElement('div');
     this.dom.id = 'player';
@@ -68,12 +71,7 @@ export class Player {
       this.controls?.focus(object);
     });
   }
-  private addDomEvents() {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const scope = this;
-    // this.dom.addEventListener('dblclick', scope.onDoubleClick.bind(scope));
-    this.dom.addEventListener('mousedown', scope.onMouseDown.bind(scope));
-  }
+
   private onResize(width: number, height: number) {
     this.setSize(width, height);
     this.setPixelRatio(window.devicePixelRatio);
@@ -101,6 +99,7 @@ export class Player {
   get cavans() {
     return this.renderer!.domElement;
   }
+
   public addAnimation(animations: Array<THREE.AnimationClip>, animationName: string, target: THREE.Object3D) {
     const mixer = new THREE.AnimationMixer(target);
     const clip = THREE.AnimationClip.findByName(animations, animationName);
@@ -190,8 +189,8 @@ export class Player {
       this.addObject(light);
       return this;
     }
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 5);
-    directionalLight.position.set(-4, 10, 10);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 8);
+    directionalLight.position.set(3, 15, 18);
     directionalLight.castShadow = true;
     directionalLight.shadow.camera.left = -100;
     directionalLight.shadow.camera.right = 100;
@@ -200,9 +199,9 @@ export class Player {
     directionalLight.shadow.camera.near = 0.5;
     directionalLight.shadow.camera.far = 100;
     directionalLight.shadow.mapSize.set(1024, 1024);
-    directionalLight.shadow.radius = 3;
+    directionalLight.shadow.radius = 2;
     this.addObject(directionalLight);
-    const ambientLight = new THREE.AmbientLight(0x606060, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xfefefe, 0.8);
     // scene.value!.add(ambientLight);
     this.addObject(ambientLight);
     return this;
@@ -239,6 +238,7 @@ export class Player {
   public play() {
     const animate = () => {
       time = performance.now();
+      this.renderer?.render(this.scene!, this.camera!);
 
       try {
         this.events.update.dispatch({ time: time - startTime, delta: time - prevTime });
@@ -251,19 +251,13 @@ export class Player {
         console.error(e.message || e, e.stack || '');
       }
 
-      this.renderer?.render(this.scene!, this.camera!);
-
       prevTime = time;
     };
 
     startTime = prevTime = performance.now();
 
-    // document.addEventListener('keydown', this.onKeyDown);
-    // document.addEventListener('keyup', this.onKeyUp);
-    // document.addEventListener('pointerdown', this.onPointerDown);
-    // document.addEventListener('pointerup', this.onPointerUp);
-    // document.addEventListener('pointermove', this.onPointerMove);
-    this.addDomEvents();
+    this.dom.addEventListener('click', this.onClick.bind(this));
+
     this.events.start.dispatch();
 
     this.renderer!.setAnimationLoop(animate);
@@ -274,13 +268,14 @@ export class Player {
     this.renderer!.render(this.scene!, this.camera!);
   }
   public stop() {
-    this.dom.removeEventListener('mousedown', this.onMouseDown.bind(this));
+    this.dom.removeEventListener('click', this.onClick.bind(this));
 
     this.events.stop.dispatch();
 
     this.renderer?.setAnimationLoop(null);
   }
   public dispose() {
+    this.stop();
     this.renderer?.dispose();
 
     this.camera = undefined;
@@ -289,8 +284,7 @@ export class Player {
     const rect = dom.getBoundingClientRect();
     return [(x - rect.left) / rect.width, (y - rect.top) / rect.height];
   }
-  private onDownPosition = new THREE.Vector2();
-  private onUpPosition = new THREE.Vector2();
+
   // private onDoubleClickPosition = new THREE.Vector2();
   // private onDoubleClick(event: MouseEvent) {
   //   const array = this.getMousePosition(this.dom, event.clientX, event.clientY);
@@ -303,37 +297,10 @@ export class Player {
 
   //   }
   // }
-
-  private onMouseDown(event: MouseEvent) {
-    // event.preventDefault();
-
-    if (event.target !== this.cavans) return;
-
+  private onClick(event: MouseEvent) {
     const array = this.getMousePosition(this.dom, event.clientX, event.clientY);
-    this.onDownPosition.fromArray(array);
-
-    document.addEventListener('mouseup', this.onMouseUp.bind(this));
+    const clickPosition = new THREE.Vector2().fromArray(array);
+    const intersects = this.selector.getPointerIntersects(clickPosition, this.camera!);
+    this.events.intersectionsDetected.dispatch(intersects);
   }
-
-  private onMouseUp(event: MouseEvent) {
-    const array = this.getMousePosition(this.dom, event.clientX, event.clientY);
-    this.onUpPosition.fromArray(array);
-
-    this.handleClick();
-
-    document.removeEventListener('mouseup', this.onMouseUp);
-  }
-
-  private handleClick() {
-    if (this.onDownPosition.distanceTo(this.onUpPosition) === 0) {
-      const intersects = this.selector.getPointerIntersects(this.onUpPosition, this.camera!);
-      this.events.intersectionsDetected.dispatch(intersects);
-
-      this.render();
-    }
-  }
-
-  // private onPointerDown(event: PointerEvent) {}
-  // private onPointerUp(event: PointerEvent) {}
-  // private onPointerMove(event: PointerEvent) {}
 }

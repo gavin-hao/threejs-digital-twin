@@ -166,6 +166,11 @@ const init = async () => {
 
   addEventListener('pointermove', onPointermove, intersectObjects);
   addEventListener('dblclick', ondblclick, intersectObjects);
+
+  outlinePass.selectedObjects = [];
+  const zhusuji = models.getObjectByName(`zhusuji_01`);
+  console.log('zhusuji', [...zhusuji!.children]);
+  outlinePass.selectedObjects.push(zhusuji!);
 };
 const initEffectComposer = () => {
   initEffectGui();
@@ -464,6 +469,7 @@ const loadModel = (url: string) => {
 //     outlinePass.selectedObjects.push(...chongyaji.children);
 //   }
 // }, 200);
+onMounted(() => {});
 onUnmounted(() => {
   // clearInterval(timer);
 });
