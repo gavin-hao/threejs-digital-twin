@@ -10,6 +10,12 @@ export const routes = [
     meta: { title: '菲尼克斯电气数字孪生平台' },
     component: () => import('@/pages/phoenix/Index.vue'),
   },
+  {
+    name: 'phoenix2',
+    path: '/Phoenix2',
+    meta: { title: '菲尼克斯电气数字孪生平台' },
+    component: () => import('@/pages/phoenix2/Index.vue'),
+  },
 ];
 
 const router = createRouter({

@@ -19,6 +19,8 @@
     "@vueuse/core": "^10.11.0",
     "element-plus": "^2.7.6",
     "lodash": "^4.17.21",
+    "mitt": "^3.0.1",
+    "signals": "^1.0.0",
     "three": "^0.166.0",
     "vue": "^3.4.29",
     "vue-router": "4"
@@ -27,6 +29,7 @@
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@types/lodash": "^4.17.6",
+    "@types/signals": "^1.0.4",
     "@types/three": "^0.165.0",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.14.1",
@@ -55,7 +58,9 @@
     "vite": "^5.3.1",
     "vue-tsc": "^2.0.21"
   },
-  "engines": {"node": ">=18"},
+  "engines": {
+    "node": ">=18"
+  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"

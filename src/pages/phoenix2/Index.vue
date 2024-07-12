@@ -86,9 +86,11 @@ import Header from '@/pages/components/Header.vue';
 import Card from '@/components/Card.vue';
 import Status from '@/components/charts/Status.vue';
 import Scene from './Scene.vue';
-import { onMounted, onUnmounted, provide, ref } from 'vue';
-import { injectContextKey, type FocusToCallback } from './context';
+import { computed, onMounted, onUnmounted, provide, ref } from 'vue';
+import { injectContextKey } from './context';
+import signals from 'signals';
 import * as Data from '../data/phoenix';
+
 const sceneRef = ref();
 const showMask = ref(true);
 const errorN = ref<{
@@ -110,37 +112,61 @@ const airCompress = new Data.AirCompressorInfos(9);
 const injectionMolding = new Data.InjectionMoldingMachineInfos(5);
 const blanking = new Data.BlankingPressInfos(8);
 const waves = new Data.WavesolderingInfos(8);
+
+const events: {
+  focusTo: signals.Signal<any>;
+  warn: signals.Signal<any>;
+} = {
+  focusTo: new signals.Signal(),
+  warn: new signals.Signal(),
+};
 const getDatas = () => {
   kongyaji.value = airCompress.update().data;
   zhusuji.value = injectionMolding.update().data;
   chongyaji.value = blanking.update().data;
   bofenghan.value = waves.update().data;
+  const error1 = kongyaji.value.filter((v) => airCompress.isWarning(v));
+  const error2 = zhusuji.value.filter((v) => injectionMolding.isWarning(v));
+  const error3 = chongyaji.value.filter((v) => blanking.isWarning(v));
+  const error4 = bofenghan.value.filter((v) => waves.isWarning(v));
+  events.warn.dispatch([...error1, ...error2, ...error3, ...error4]);
   setTimeout(getDatas, 30000);
 };
+const errors = computed(() => {
+  const error1 = kongyaji.value.filter((v) => airCompress.isWarning(v));
+  const error2 = zhusuji.value.filter((v) => injectionMolding.isWarning(v));
+  const error3 = chongyaji.value.filter((v) => blanking.isWarning(v));
+  const error4 = bofenghan.value.filter((v) => waves.isWarning(v));
+  return [...error1, ...error2, ...error3, ...error4];
+});
 
 onMounted(() => {
   getDatas();
+  setTimeout(() => {
+    events.warn.dispatch(errors.value);
+  }, 3000);
 });
 
 onUnmounted(() => {});
 const handleClickStatus = (name: string) => {
   dispatchFocus(name);
 };
-const focusCallbacks: FocusToCallback[] = [];
-const onFocusTo = (callback: FocusToCallback) => {
-  focusCallbacks.push(callback);
-};
+// const focusCallbacks: FocusToCallback[] = [];
+// const onFocusTo = (callback: FocusToCallback) => {
+//   focusCallbacks.push(callback);
+// };
 const dispatchFocus = (focusKey: string) => {
-  for (const callback of focusCallbacks) {
-    callback?.(focusKey);
-  }
+  // for (const callback of focusCallbacks) {
+  //   callback?.(focusKey);
+  // }
+  events.focusTo.dispatch(focusKey);
 };
 provide(injectContextKey, {
   kongyaji,
   chongyaji,
   bofenghan,
   zhusuji,
-  onFocusTo,
+  events,
 });
 </script>
 <style lang="scss" scoped>

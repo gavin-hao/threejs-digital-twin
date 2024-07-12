@@ -573,6 +573,11 @@
   dependencies:
     undici-types "~5.26.4"
 
+"@types/signals@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.npmmirror.com/@types/signals/-/signals-1.0.4.tgz#7ea076640627a00752da4635abd71a6f874a47c8"
+  integrity sha512-6Nfcw0msIx3Srr0bz7u6v+y3mj7uy5Lh6fEbkPazaMr4qz+CtyKjfb7SX+8pq7a2TV710k0pm0Qxj5ClTB4YCA==
+
 "@types/stats.js@*":
   version "0.17.3"
   resolved "https://registry.yarnpkg.com/@types/stats.js/-/stats.js-0.17.3.tgz#705446e12ce0fad618557dd88236f51148b7a935"
@@ -2522,6 +2527,11 @@ minimist@^1.2.8:
   resolved "https://registry.npmmirror.com/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
   integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
 
+mitt@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npmmirror.com/mitt/-/mitt-3.0.1.tgz#ea36cf0cc30403601ae074c8f77b7092cdab36d1"
+  integrity sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==
+
 ms@2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
@@ -2972,6 +2982,11 @@ signal-exit@^4.0.1, signal-exit@^4.1.0:
   version "4.1.0"
   resolved "https://registry.npmmirror.com/signal-exit/-/signal-exit-4.1.0.tgz#952188c1cbd546070e2dd20d0f41c0ae0530cb04"
   integrity sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==
+
+signals@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmmirror.com/signals/-/signals-1.0.0.tgz#65f0c1599352b35372ecaae5a250e6107376ed69"
+  integrity sha512-dE3lBiqgrgIvpGHYBy6/kiYKfh0HXRmbg0ocakBKiOefbal6ZeTtNlQlxsu9ADkNzv5OmRwRKu+IaTPSqJdZDg==
 
 slash@^3.0.0:
   version "3.0.0"

@@ -40,7 +40,7 @@ import * as THREE from 'three';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import Stats from 'three/addons/libs/stats.module.js';
-import { LightProbeGenerator } from 'three/examples/jsm/lights/LightProbeGenerator.js';
+// import { LightProbeGenerator } from 'three/examples/jsm/lights/LightProbeGenerator.js';
 // import { Sky } from 'three/addons/objects/Sky.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 // import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -52,6 +52,7 @@ import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 // import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 // import { findParent } from '@/hooks/useThree/utils';
 import { CSS2DObject } from 'three/examples/jsm/Addons.js';
+// import { useContext } from './context';
 export interface Progress {
   loaded: number;
   total: number;
@@ -69,14 +70,7 @@ const effectParams = {
   visibleEdgeColor: '#E93204',
   hiddenEdgeColor: '#190a05',
 };
-const props = defineProps<{
-  data: {
-    chongyaji: number;
-    bofenghan: number;
-    zhusuji: number;
-    kongyaji: number;
-  };
-}>();
+
 // GUI 可视化调整参数
 const guiPanel = new GUI();
 let stats!: Stats;
@@ -298,7 +292,7 @@ const loadAllModels = async () => {
   await Promise.all([loadPhoenixModel()]);
 };
 const loadPhoenixModel = async () => {
-  const url = '/models/scene.glb'; //'/models/scene.glb';
+  const url = '/models/phoenix/scene.glb'; //'/models/scene.glb';
   try {
     const phoenix = await loadModel(url);
     // console.log(phoenix.scene, 'gltf.scene');
@@ -315,33 +309,33 @@ const loadPhoenixModel = async () => {
 //   axis.layers.enableAll();
 //   scene.value!.add(axis);
 // };
-const path = '/textures/skybox/night/';
+// const path = '/textures/skybox/daytime/';
 
 const initLights = () => {
   //probe;
-  const lightProbe = new THREE.LightProbe();
-  scene.value!.add(lightProbe);
-  const loader = new THREE.CubeTextureLoader().setPath(path);
-  const texture = loader.load(['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg'], (cubeTexture) => {
-    scene.value!.background = cubeTexture;
-    lightProbe.copy(LightProbeGenerator.fromCubeTexture(cubeTexture));
-  });
-  const probePanel = guiPanel.addFolder('LightProbe');
-  probePanel.add(lightProbe, 'intensity', 0, 100).name('intensity');
+  // const lightProbe = new THREE.LightProbe();
+  // scene.value!.add(lightProbe);
+  // const loader = new THREE.CubeTextureLoader().setPath(path);
+  // const texture = loader.load(['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg'], (cubeTexture) => {
+  //   scene.value!.background = cubeTexture;
+  //   lightProbe.copy(LightProbeGenerator.fromCubeTexture(cubeTexture));
+  // });
+  // const probePanel = guiPanel.addFolder('LightProbe');
+  // probePanel.add(lightProbe, 'intensity', 0, 100).name('intensity');
   scene.value!.getObjectByName('phoenix')?.traverse((item) => {
     // console.log(item, 'item');
     if (item instanceof THREE.Mesh) {
       item.castShadow = true;
       item.receiveShadow = true;
-      item.material.envMap = texture; //sky.material;
-      item.material.envMapIntensity = 0.5;
+      // item.material.envMap = texture; //sky.material;
+      // item.material.envMapIntensity = 0.5;
     }
   });
 
   const ambientLight = new THREE.AmbientLight(0x606060, 0.5);
   scene.value!.add(ambientLight);
   const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
-  directionalLight.position.set(-4, 10, 10);
+  directionalLight.position.set(5, 10, 7.5);
   directionalLight.castShadow = true;
   directionalLight.shadow.camera.left = -100;
   directionalLight.shadow.camera.right = 100;
@@ -442,36 +436,36 @@ const loadModel = (url: string) => {
     );
   });
 };
-
-defineExpose({
-  focusTo: (name: string) => {
-    const obj = models.getObjectByName(name);
-    if (obj) {
-      focus(obj);
-    }
-  },
-});
-const timer = setInterval(() => {
-  outlinePass.selectedObjects = [];
-  const zhusuji = models.getObjectByName(`zhusuji_0${props.data?.zhusuji}`);
-  if (zhusuji) {
-    outlinePass.selectedObjects.push(...zhusuji.children);
-  }
-  const kongyaji = models.getObjectByName(`kongyaji_0${props.data?.kongyaji}`);
-  if (kongyaji) {
-    outlinePass.selectedObjects.push(...kongyaji.children);
-  }
-  const bofenghan = models.getObjectByName(`bofenghan_0${props.data.bofenghan}`);
-  if (bofenghan) {
-    outlinePass.selectedObjects.push(...bofenghan.children);
-  }
-  const chongyaji = models.getObjectByName(`chongyaji_0${props.data.chongyaji}`);
-  if (chongyaji) {
-    outlinePass.selectedObjects.push(...chongyaji.children);
-  }
-}, 200);
+// const phoenixContext = useContext();
+// defineExpose({
+//   focusTo: (name: string) => {
+//     const obj = models.getObjectByName(name);
+//     if (obj) {
+//       focus(obj);
+//     }
+//   },
+// });
+// const timer = setInterval(() => {
+//   outlinePass.selectedObjects = [];
+//   const zhusuji = models.getObjectByName(`zhusuji_0${props.data?.zhusuji}`);
+//   if (zhusuji) {
+//     outlinePass.selectedObjects.push(...zhusuji.children);
+//   }
+//   const kongyaji = models.getObjectByName(`kongyaji_0${props.data?.kongyaji}`);
+//   if (kongyaji) {
+//     outlinePass.selectedObjects.push(...kongyaji.children);
+//   }
+//   const bofenghan = models.getObjectByName(`bofenghan_0${props.data.bofenghan}`);
+//   if (bofenghan) {
+//     outlinePass.selectedObjects.push(...bofenghan.children);
+//   }
+//   const chongyaji = models.getObjectByName(`chongyaji_0${props.data.chongyaji}`);
+//   if (chongyaji) {
+//     outlinePass.selectedObjects.push(...chongyaji.children);
+//   }
+// }, 200);
 onUnmounted(() => {
-  clearInterval(timer);
+  // clearInterval(timer);
 });
 </script>
 <style lang="scss" scoped>

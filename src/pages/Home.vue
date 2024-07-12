@@ -18,6 +18,7 @@ import { routes } from '@/router';
   height: 100%;
   padding: 24px;
   margin: 0 auto;
+  font-size: 18px;
 }
 .nav {
   list-style: none;
