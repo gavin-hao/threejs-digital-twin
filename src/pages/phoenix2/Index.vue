@@ -236,15 +236,15 @@ provide(injectContextKey, {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  background-image: radial-gradient(circle at center, transparent 0%, rgba(18, 19, 40, 0.9) 100%),
+  background-image: radial-gradient(circle at center, transparent 0%, rgba(18, 19, 40, 0.5) 100%),
     linear-gradient(
       to right,
       rgba(18, 19, 40, 0.8) 0%,
-      rgba(18, 19, 40, 0.6) 10%,
-      rgba(18, 19, 40, 0.1) 30%,
+      rgba(18, 19, 40, 0.5) 10%,
+      rgba(18, 19, 40, 0.1) 20%,
       rgba(18, 19, 40, 0) 50%,
-      rgba(18, 19, 40, 0.1) 70%,
-      rgba(18, 19, 40, 0.6) 90%,
+      rgba(18, 19, 40, 0.1) 80%,
+      rgba(18, 19, 40, 0.5) 90%,
       rgba(18, 19, 40, 0.8) 100%
     );
   background-repeat: no-repeat;

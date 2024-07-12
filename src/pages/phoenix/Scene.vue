@@ -297,7 +297,7 @@ const loadAllModels = async () => {
   await Promise.all([loadPhoenixModel()]);
 };
 const loadPhoenixModel = async () => {
-  const url = '/models/phoenix/scene.glb'; //'/models/scene.glb';
+  const url = '/models/scene_bak.glb'; //'/models/scene.glb';
   try {
     const phoenix = await loadModel(url);
     // console.log(phoenix.scene, 'gltf.scene');

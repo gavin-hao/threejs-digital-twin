@@ -189,7 +189,7 @@ export class Player {
       this.addObject(light);
       return this;
     }
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 8);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 6);
     directionalLight.position.set(3, 15, 18);
     directionalLight.castShadow = true;
     directionalLight.shadow.camera.left = -100;
@@ -204,6 +204,10 @@ export class Player {
     const ambientLight = new THREE.AmbientLight(0xfefefe, 0.8);
     // scene.value!.add(ambientLight);
     this.addObject(ambientLight);
+
+    const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 1);
+    hemisphereLight.position.set(0, 8, 0);
+    this.addObject(hemisphereLight);
     return this;
   }
 

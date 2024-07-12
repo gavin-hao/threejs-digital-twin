@@ -24,7 +24,19 @@
   height: 100vh;
   // opacity: 0.4;
 
-  background: #121328cc;
+  // background: #121328cc;
+  background-image: radial-gradient(circle at center, rgba(9, 49, 152, 0.706) 0%, rgba(19, 30, 58, 0.9) 100%),
+    linear-gradient(
+      to right,
+      rgba(9, 49, 152, 0.8) 0%,
+      rgba(9, 49, 152, 0.4) 10%,
+      rgba(9, 49, 152, 0.1) 30%,
+      rgba(9, 49, 152, 0) 50%,
+      rgba(9, 49, 152, 0.1) 70%,
+      rgba(9, 49, 152, 0.4) 90%,
+      rgba(9, 49, 152, 0.8) 100%
+    );
+  background-repeat: no-repeat;
   &-content {
     width: 100vw;
     height: 100vh;

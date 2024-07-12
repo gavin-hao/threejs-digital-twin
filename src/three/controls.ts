@@ -39,7 +39,17 @@ class PlayerControls extends THREE.EventDispatcher {
   public update(time?: { time: number; delta: number }) {
     this.orbitControls.update(time?.delta);
   }
+  // public focusTo(target: THREE.Object3D) {
+  //   const box = new THREE.Box3();
+  //   const center = new THREE.Vector3();
+  //   const sphere = new THREE.Sphere();
+  //   const delta = new THREE.Vector3();
+  //   const quaternion = new THREE.Quaternion();
 
+  //   box.setFromObject(target);
+  //   box.getCenter(center);
+  //   target.getWorldQuaternion(quaternion);
+  // }
   public focus(target: THREE.Object3D) {
     const pos = new THREE.Vector3();
     target.getWorldPosition(pos);
