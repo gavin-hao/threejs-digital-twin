@@ -111,7 +111,7 @@ const bofenghan = ref<Array<Record<string, any>>>([]);
 const airCompress = new Data.AirCompressorInfos(9);
 const injectionMolding = new Data.InjectionMoldingMachineInfos(5);
 const blanking = new Data.BlankingPressInfos(8);
-const waves = new Data.WavesolderingInfos(8);
+const waves = new Data.WavesolderingInfos(7);
 
 const events: {
   focusTo: signals.Signal<any>;
