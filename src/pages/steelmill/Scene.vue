@@ -106,12 +106,10 @@ onMounted(async () => {
   player.addCSS3Renderer();
   player.addControls();
   player.addLight();
-  // const directLight = new THREE.DirectionalLight(0xffffff, 10);
-  // directLight.position.set(0, 5, 0);
-  // directLight.castShadow = true; // default false
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 10);
+
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 6);
   directionalLight.position.set(-11, 15, -25);
-  directionalLight.castShadow = true;
+  directionalLight.castShadow = false;
   directionalLight.shadow.camera.left = -100;
   directionalLight.shadow.camera.right = 100;
   directionalLight.shadow.camera.top = 100;
