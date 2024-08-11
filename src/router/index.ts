@@ -4,17 +4,23 @@ import HomeView from '@/pages/Home.vue';
 
 export const routes = [
   { name: 'home', path: '/', component: HomeView, meta: { title: '首页' } },
+  // {
+  //   name: 'phoenix',
+  //   path: '/Phoenix',
+  //   meta: { title: '菲尼克斯电气数字孪生平台' },
+  //   component: () => import('@/pages/phoenix/Index.vue'),
+  // },
   {
     name: 'phoenix',
-    path: '/Phoenix',
-    meta: { title: '菲尼克斯电气数字孪生平台' },
-    component: () => import('@/pages/phoenix/Index.vue'),
-  },
-  {
-    name: 'phoenix2',
-    path: '/Phoenix2',
+    path: '/phoenix',
     meta: { title: '菲尼克斯电气数字孪生平台' },
     component: () => import('@/pages/phoenix2/Index.vue'),
+  },
+  {
+    name: 'steelmill',
+    path: '/steelmill',
+    meta: { title: '钢铁厂数字孪生平台' },
+    component: () => import('@/pages/steelmill/Index.vue'),
   },
 ];
 

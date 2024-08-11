@@ -1,103 +1,131 @@
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import TWEEN, { Easing } from '@tweenjs/tween.js';
 import * as THREE from 'three';
-class PlayerControls extends THREE.EventDispatcher {
+
+const focusEvent = { type: 'focus' };
+const changeEvent = { type: 'change' };
+
+type ControlOptions = {
+  autoRotate: boolean;
+  autoRotateSpeed: number;
+  minDistance: number;
+  maxDistance: number;
+  dampingFactor: number;
+  enableDamping: boolean;
+  enabled: boolean;
+};
+class PlayerControls extends THREE.EventDispatcher<any> {
   private object: THREE.Camera;
   private domElement: HTMLElement;
   private orbitControls: OrbitControls;
-  center = new THREE.Vector3();
-  constructor(object: THREE.Camera, domElement: HTMLElement) {
+  enabled: boolean = true;
+  constructor(object: THREE.Camera, domElement: HTMLElement, options?: ControlOptions) {
     super();
     this.object = object;
     this.domElement = domElement;
     this.orbitControls = new OrbitControls(this.object, this.domElement);
-    this.orbitControls.minDistance = 5;
-    this.orbitControls.maxDistance = 100;
-    this.orbitControls.enableDamping = true; //启用阻尼
+    this.orbitControls.minDistance = options?.minDistance || 5;
+    this.orbitControls.maxDistance = options?.minDistance || 100;
+    this.orbitControls.enableDamping = options?.enableDamping || false; //启用阻尼
+    this.orbitControls.enabled = options?.enabled ?? true;
     this.addDomEvents();
+
+    this.orbitControls.addEventListener('change', () => {
+      // 浏览器控制台查看相机位置变化
+      this.dispatchEvent(changeEvent);
+    });
   }
   private addDomEvents() {
     this.domElement.addEventListener('click', this.onClick);
     this.domElement.addEventListener('pointermove', this.onPointerMove);
-    this.domElement.addEventListener('dblclick', this.onDoubleClick);
+    this.domElement.addEventListener('dblclick', this.onDoubleClick.bind(this));
   }
-  // private getMousePosition(dom: HTMLElement, x: number, y: number) {
-  //   const rect = dom.getBoundingClientRect();
-  //   return [(x - rect.left) / rect.width, (y - rect.top) / rect.height];
-  // }
-  private onClick(_event: MouseEvent) {
-    // const array = this.getMousePosition(this.domElement, event.clientX, event.clientY);
-    // onDoubleClickPosition.fromArray(array);
-    // const intersects = selector.getPointerIntersects(onDoubleClickPosition, camera);
-    // if (intersects.length > 0) {
-    //   const intersect = intersects[0];
-    //   // signals.objectFocused.dispatch(intersect.object);
-    // }
+
+  private onClick(_event: MouseEvent) {}
+  private onDoubleClick() {
+    this.orbitControls.reset();
   }
-  private onDoubleClick() {}
   private onPointerMove() {}
-  public update(time?: { time: number; delta: number }) {
-    this.orbitControls.update(time?.delta);
+
+  public reset() {
+    this.orbitControls.reset();
   }
-  // public focusTo(target: THREE.Object3D) {
-  //   const box = new THREE.Box3();
-  //   const center = new THREE.Vector3();
-  //   const sphere = new THREE.Sphere();
-  //   const delta = new THREE.Vector3();
-  //   const quaternion = new THREE.Quaternion();
-
-  //   box.setFromObject(target);
-  //   box.getCenter(center);
-  //   target.getWorldQuaternion(quaternion);
-  // }
-  public focus(target: THREE.Object3D) {
-    const pos = new THREE.Vector3();
-    target.getWorldPosition(pos);
-    // 相机飞行到的位置和观察目标拉开一定的距离
-    const pos2 = pos.clone().addScalar(8);
-
-    // const box = new THREE.Box3();
-    // const center = new THREE.Vector3();
-    // const sphere = new THREE.Sphere();
-    // const delta = new THREE.Vector3();
-    // const quaternion = new THREE.Quaternion();
-
-    // box.setFromObject(target);
-    // box.getCenter(center);
-    // target.getWorldQuaternion(quaternion);
-
-    this.createCameraTween(pos2, pos);
+  public saveState() {
+    this.orbitControls.saveState();
+  }
+  public update(deltaTime?: number): boolean {
+    return this.orbitControls.update(deltaTime);
   }
   /**
-   * 相机动画函数，从A点飞行到B点，A点表示相机当前所处状态
-   * @param endPos {THREE.Vector3} 表示动画结束相机位置
-   * @param endTarget {THREE.Vector3} 表示相机动画结束lookAt指向的目标观察点
+   * Returns the distance from the camera to the target.
+   * @returns number
    */
-  private createCameraTween(endPos: THREE.Vector3, endTarget: THREE.Vector3) {
-    const cameraStartPos = this.object!.position;
-    const controlsPos = this.orbitControls.target;
-    // console.log('createCameraTween', cameraStartPos, controlsPos, endPos, endTarget);
+  public getDistence() {
+    return this.orbitControls.getDistance();
+  }
+  /**
+   * 将相机聚焦到指定的物体，并拉近相机距离
+   * @param target Object3D - 聚焦的目标
+   * @param options.scalar - number  default 5 , 相机位置的矩阵乘该标量值用于与聚焦对象拉开一定距离
+   */
+  public focus(
+    target: THREE.Object3D,
+    options?: {
+      scalar?: number;
+    }
+  ) {
+    const _DEFAULT_OPTIONS = {
+      scalar: 5,
+    };
     const camera = this.object;
     const controls = this.orbitControls;
+
+    /** 相机位置与focus目标拉的偏移量 */
+    const scalar = options?.scalar !== undefined ? options.scalar : _DEFAULT_OPTIONS.scalar;
+    const box = new THREE.Box3();
+    const center = new THREE.Vector3();
+    const sphere = new THREE.Sphere();
+    // 相机移动的偏移量
+    const delta = new THREE.Vector3();
+    let distance = 0;
+    // 获取目标对象的包围盒
+    box.setFromObject(target);
+    box.getCenter(center);
+    distance = box.getBoundingSphere(sphere).radius;
+
+    const quaternion = new THREE.Quaternion();
+    target.getWorldQuaternion(quaternion);
+    // quaternion.copy(camera.quaternion);
+    //相机以45度角俯视
+    quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 4));
+    delta.set(0, 0, 1);
+    delta.applyQuaternion(quaternion);
+    delta.multiplyScalar(distance * scalar);
+
+    const cameraPositionStart = camera.position.clone();
+    const cameraPositionEnd = center.clone().add(delta);
+    // 相机初始观察点
+    const targetStartPoint: THREE.Vector3 = controls.target.clone();
+    const targetEndPoint = center.clone();
+    const eventdispatcher = this.dispatchEvent;
     new TWEEN.Tween({
       // 不管相机此刻处于什么状态，直接读取当前的位置和目标观察点
-      x: cameraStartPos.x,
-      y: cameraStartPos.y,
-      z: cameraStartPos.z,
-      tx: controlsPos.x,
-      ty: controlsPos.y,
-      tz: controlsPos.z,
+      x: cameraPositionStart.x,
+      y: cameraPositionStart.y,
+      z: cameraPositionStart.z,
+      tx: targetStartPoint.x,
+      ty: targetStartPoint.y,
+      tz: targetStartPoint.z,
     })
       .to(
         {
           // 动画结束相机位置坐标
-          x: endPos.x,
-          y: endPos.y,
-          z: endPos.z,
-          // 动画结束相机指向的目标观察点
-          tx: endTarget.x,
-          ty: endTarget.y,
-          tz: endTarget.z,
+          x: cameraPositionEnd.x,
+          y: cameraPositionEnd.y,
+          z: cameraPositionEnd.z,
+          tx: targetEndPoint.x,
+          ty: targetEndPoint.y,
+          tz: targetEndPoint.z,
         },
         1000
       )
@@ -105,10 +133,12 @@ class PlayerControls extends THREE.EventDispatcher {
       .onUpdate(function (obj) {
         // 动态改变相机位置
         camera.position.set(obj.x, obj.y, obj.z);
-        // 动态计算相机视线
-        // camera.lookAt(obj.tx, obj.ty, obj.tz);
+        // 设置相机的视线
         controls.target.set(obj.tx, obj.ty, obj.tz);
-        controls.update(); //内部会执行.lookAt()
+        controls.update();
+      })
+      .onComplete(() => {
+        eventdispatcher(focusEvent);
       })
       .start();
   }

@@ -51,6 +51,7 @@
       display: flex;
       grid-gap: 10px;
       width: 25vw;
+      pointer-events: none;
       transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
       // height: calc(100% - 1rem);
     }
@@ -63,6 +64,7 @@
       display: flex;
       grid-gap: 10px;
       width: 25vw;
+      pointer-events: none;
       transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
     }
     &-main {

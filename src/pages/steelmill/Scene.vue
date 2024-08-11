@@ -77,7 +77,7 @@ const selectedObjectInfo = ref<{ [key: string]: unknown }>();
 const context = useContext();
 const loading = ref<boolean>(true);
 const equipmentInfos = computed(() => {
-  return [...context.bofenghan.value, ...context.chongyaji.value, ...context.kongyaji.value, ...context.zhusuji.value];
+  return [];
 });
 let composer: EffectComposer, outlinePass: OutlinePass;
 const effectParams = {
@@ -106,18 +106,36 @@ onMounted(async () => {
   player.addCSS3Renderer();
   player.addControls();
   player.addLight();
-  // const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-  // pointLight.position.set(0, 5, 0);
-  // pointLight.castShadow = true; // default false
+  // const directLight = new THREE.DirectionalLight(0xffffff, 10);
+  // directLight.position.set(0, 5, 0);
+  // directLight.castShadow = true; // default false
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 10);
+  directionalLight.position.set(-11, 15, -25);
+  directionalLight.castShadow = true;
+  directionalLight.shadow.camera.left = -100;
+  directionalLight.shadow.camera.right = 100;
+  directionalLight.shadow.camera.top = 100;
+  directionalLight.shadow.camera.bottom = -100;
+  directionalLight.shadow.camera.near = 0.5;
+  directionalLight.shadow.camera.far = 100;
+  directionalLight.shadow.mapSize.set(1024, 1024);
+  directionalLight.shadow.radius = 2;
+  player.addLight(directionalLight);
+  const ambientLight = new THREE.AmbientLight(0xfefefe, 1);
+  // scene.value!.add(ambientLight);
+  player.addLight(ambientLight);
 
+  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 3);
+  hemisphereLight.position.set(0, 8, 0);
+  player.addLight(hemisphereLight);
   // const lightPanel = gui.addFolder('PointLight');
-  // lightPanel.add(pointLight, 'intensity', 0, 50).name('intensity');
-  // lightPanel.add(pointLight, 'intensity', 0, 50).name('intensity');
-  // lightPanel.add(pointLight.position, 'x').name('position.x');
-  // lightPanel.add(pointLight.position, 'y').name('position.y');
-  // lightPanel.add(pointLight.position, 'z').name('position.z');
-  // lightPanel.addColor(pointLight, 'color').onChange(function (value) {
-  //   pointLight.color.set(value);
+  // lightPanel.add(directLight, 'intensity', 0, 50).name('intensity');
+  // lightPanel.add(directLight, 'intensity', 0, 50).name('intensity');
+  // lightPanel.add(directLight.position, 'x').name('position.x');
+  // lightPanel.add(directLight.position, 'y').name('position.y');
+  // lightPanel.add(directLight.position, 'z').name('position.z');
+  // lightPanel.addColor(directLight, 'color').onChange(function (value) {
+  //   directLight.color.set(value);
   // });
   if (process.env.NODE_ENV !== 'development') {
     gui.hide();
@@ -128,8 +146,8 @@ onMounted(async () => {
   // pointLight.shadow.camera.near = 0.5; // default
   // pointLight.shadow.camera.far = 500; // default
 
-  // player.addLight(pointLight);
-  player.scene.fog = new THREE.Fog(0xcccccc, 2, 100);
+  // player.addLight(directLight);
+  player.scene.fog = new THREE.Fog(0xcccccc, 2, 250);
   composer = new EffectComposer(player.renderer!);
   player.events.resize.add((width, height) => {
     composer.setSize(width, height);
@@ -203,7 +221,7 @@ onMounted(async () => {
     }
   });
   loading.value = true;
-  const url = '/models/phoenix/scene.glb';
+  const url = '/models/steelmill/scene.glb';
   const loadmanager = THREE.DefaultLoadingManager;
   // loadmanager.onLoad=()
   const scene = await player.loader.loadFile(url, loadmanager);
@@ -225,13 +243,13 @@ onMounted(async () => {
       intersectObjects.push(item);
     }
   });
-  scene.name = 'phoenix';
+  scene.name = 'steelmill';
   // console.log('loaded scene', scene, intersectObjects);
   // const radiansPerSecond = THREE.MathUtils.degToRad(30);
   player.addObject(scene);
 
   //播放动画
-  const model = player.scene.getObjectByName('phoenix')!;
+  const model = player.scene.getObjectByName('steelmill')!;
   const chongyajiList: THREE.Object3D[] = [];
   const chuansongdaiObject: THREE.Object3D = model.getObjectByName('chuansongdai')!;
   const jixiebiObject: THREE.Object3D = model.getObjectByName('jixiebi_01')!;

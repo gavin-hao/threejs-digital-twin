@@ -1,7 +1,7 @@
 <template>
   <div :class="['card-container', backgroud ? 'card-background' : '']">
     <div class="card-header">
-      <div class="icon">
+      <div class="icon" v-if="!backgroud">
         <slot name="icon">
           <img src="@/assets/images/data.png" alt="icon" />
         </slot>
@@ -36,11 +36,6 @@ withDefaults(
   backdrop-filter: blur(1px);
 
   border: 1px solid transparent;
-  // padding: 8px 12px;
-  &.card-background {
-    // background-color: rgb(7, 84, 140, 0.3);
-    background-color: rgba(0, 34, 51, 0.2);
-  }
   .card-header {
     position: relative;
     display: flex;
@@ -65,6 +60,17 @@ withDefaults(
       line-height: 0;
     }
   }
+  // padding: 8px 12px;
+  &.card-background {
+    // background-color: rgb(7, 84, 140, 0.3);
+    background-color: rgba(0, 34, 51, 0.4);
+    .card-header {
+      &::after {
+        background-color: transparent;
+      }
+    }
+  }
+
   .card-body {
     padding: 12px 4px;
   }
