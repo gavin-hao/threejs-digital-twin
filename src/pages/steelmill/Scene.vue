@@ -77,7 +77,7 @@ const selectedObjectInfo = ref<{ [key: string]: unknown }>();
 const context = useContext();
 const loading = ref<boolean>(true);
 const equipmentInfos = computed(() => {
-  return [];
+  return [] as Array<any>;
 });
 let composer: EffectComposer, outlinePass: OutlinePass;
 const effectParams = {
