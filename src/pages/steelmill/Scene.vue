@@ -145,7 +145,7 @@ onMounted(async () => {
   // pointLight.shadow.camera.far = 500; // default
 
   // player.addLight(directLight);
-  player.scene.fog = new THREE.Fog(0xcccccc, 2, 250);
+  player.scene.fog = new THREE.Fog(0xcccccc, 2, 350);
   composer = new EffectComposer(player.renderer!);
   player.events.resize.add((width, height) => {
     composer.setSize(width, height);
