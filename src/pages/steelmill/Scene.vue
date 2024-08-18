@@ -71,7 +71,7 @@ const gui = new GUI();
 const viewport = ref<HTMLElement>();
 const popoverRef = ref<HTMLElement>();
 const warnIconRef = ref<HTMLElement>();
-let intersectObjects: Array<THREE.Object3D> = [];
+// let intersectObjects: Array<THREE.Object3D> = [];
 let popoverObject: CSS2DObject;
 const selectedObjectInfo = ref<{ [key: string]: unknown }>();
 const context = useContext();
@@ -92,7 +92,7 @@ const effectParams = {
 };
 
 onMounted(async () => {
-  intersectObjects = [];
+  // intersectObjects = [];
 
   player.setSize(viewport.value!.offsetWidth, viewport.value!.offsetHeight);
   player.setPixelRatio(window.devicePixelRatio);
@@ -225,21 +225,22 @@ onMounted(async () => {
   const scene = await player.loader.loadFile(url, loadmanager);
 
   scene.traverse((item) => {
-    if (!(item instanceof THREE.Object3D)) {
-      return;
-    }
-    if (isZhusuji(item) || isChongyaji(item) || isKongyaji(item) || isBofenghan(item)) {
-      for (let i = 0; i < item.children.length; i++) {
-        const group = item.children[i];
-        //递归遍历chooseObj，并给chooseObj的所有子孙后代设置一个ancestors属性指向自己
-        group.traverse(function (obj) {
-          if (obj instanceof THREE.Mesh) {
-            (obj as Object3DWrap).ancestors = item;
-          }
-        });
-      }
-      intersectObjects.push(item);
-    }
+    console.log(item);
+    // if (!(item instanceof THREE.Object3D)) {
+    //   return;
+    // }
+    // if (isZhusuji(item) || isChongyaji(item) || isKongyaji(item) || isBofenghan(item)) {
+    //   for (let i = 0; i < item.children.length; i++) {
+    //     const group = item.children[i];
+    //     //递归遍历chooseObj，并给chooseObj的所有子孙后代设置一个ancestors属性指向自己
+    //     group.traverse(function (obj) {
+    //       if (obj instanceof THREE.Mesh) {
+    //         (obj as Object3DWrap).ancestors = item;
+    //       }
+    //     });
+    //   }
+    //   intersectObjects.push(item);
+    // }
   });
   scene.name = 'steelmill';
   // console.log('loaded scene', scene, intersectObjects);
@@ -248,33 +249,35 @@ onMounted(async () => {
 
   //播放动画
   const model = player.scene.getObjectByName('steelmill')!;
-  const chongyajiList: THREE.Object3D[] = [];
-  const chuansongdaiObject: THREE.Object3D = model.getObjectByName('chuansongdai')!;
-  const jixiebiObject: THREE.Object3D = model.getObjectByName('jixiebi_01')!;
+
   const animations = model.animations;
+  console.log('animations', animations);
+  for (const ani of animations) {
+    player.addAnimation(animations, ani.name, model);
+  }
   // 把动画关联的Mesh 名称改成一致的 否则动画不能正确执行
-  model.traverse((item) => {
-    if (item.name.startsWith('chongyaji_')) {
-      chongyajiList.push(item);
-    }
-  });
-  chongyajiList.forEach((chongyaji) => {
-    chongyaji.traverse((mesh) => {
-      if (mesh.type === 'Bone' && mesh.userData.name) {
-        mesh.name = mesh.userData.name;
-      }
-    });
-  });
+  // model.traverse((item) => {
+  //   if (item.name.startsWith('chongyaji_')) {
+  //     chongyajiList.push(item);
+  //   }
+  // });
+  // chongyajiList.forEach((chongyaji) => {
+  //   chongyaji.traverse((mesh) => {
+  //     if (mesh.type === 'Bone' && mesh.userData.name) {
+  //       mesh.name = mesh.userData.name;
+  //     }
+  //   });
+  // });
   // console.log(animations);
-  for (let object of chongyajiList) {
-    player.addAnimation(animations, 'chongyaji|Chongyaji|BaseLayer', object);
-  }
-  if (chuansongdaiObject) {
-    // player.addAnimation(animations, 'Dummy001|chuansongdai|BaseLayer', chuansongdaiObject);
-  }
-  if (jixiebiObject) {
-    player.addAnimation(animations, 'jixiebi|jxb2|BaseLayer', jixiebiObject);
-  }
+  // for (let object of chongyajiList) {
+  //   player.addAnimation(animations, 'chongyaji|Chongyaji|BaseLayer', object);
+  // }
+  // if (chuansongdaiObject) {
+  //   // player.addAnimation(animations, 'Dummy001|chuansongdai|BaseLayer', chuansongdaiObject);
+  // }
+  // if (jixiebiObject) {
+  //   player.addAnimation(animations, 'jixiebi|jxb2|BaseLayer', jixiebiObject);
+  // }
 
   // 创建弹窗的css2d模型
   popoverObject = new CSS2DObject(popoverRef.value!);
@@ -291,18 +294,18 @@ onMounted(async () => {
 
   loading.value = false;
 });
-const isZhusuji = (object: THREE.Object3D) => {
-  return object.name?.includes('zhusuji_');
-};
-const isChongyaji = (object: THREE.Object3D) => {
-  return object.name?.includes('chongyaji_');
-};
-const isKongyaji = (object: THREE.Object3D) => {
-  return object.name?.includes('kongyaji_');
-};
-const isBofenghan = (object: THREE.Object3D) => {
-  return object.name?.includes('bofenghan_');
-};
+// const isZhusuji = (object: THREE.Object3D) => {
+//   return object.name?.includes('zhusuji_');
+// };
+// const isChongyaji = (object: THREE.Object3D) => {
+//   return object.name?.includes('chongyaji_');
+// };
+// const isKongyaji = (object: THREE.Object3D) => {
+//   return object.name?.includes('kongyaji_');
+// };
+// const isBofenghan = (object: THREE.Object3D) => {
+//   return object.name?.includes('bofenghan_');
+// };
 let chooseObject: THREE.Object3D | null = null;
 function onSelected(object?: THREE.Object3D) {
   const selectObject = object; //(object as Object3DWrap).ancestors;

@@ -52,7 +52,6 @@ export class AirCompressorInfos extends BaseInfos {
         第一级排放温度: { value: generateRandomNumber(60, 80), unit: '°C', min: 60, max: 80 },
       };
       this.equipmentList.push(equipment);
-      Intl.NumberFormat();
     }
     return this;
   }
