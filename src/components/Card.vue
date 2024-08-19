@@ -33,8 +33,8 @@ withDefaults(
 <style lang="scss" scoped>
 .card-container {
   position: relative;
+  pointer-events: initial;
   backdrop-filter: blur(1px);
-
   border: 1px solid transparent;
   .card-header {
     position: relative;

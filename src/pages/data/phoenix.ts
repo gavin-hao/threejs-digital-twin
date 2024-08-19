@@ -2,8 +2,8 @@ function generateRandomNumber(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
   // return Math.fround(Math.random() * (max - min)) + min;
 }
-function formatNumberWithZero(num: number) {
-  const strNum = new Intl.NumberFormat('zh-CN', { minimumIntegerDigits: 2, minimumFractionDigits: 0 }).format(num);
+function formatNumberPadZero(num: number) {
+  const strNum = num.toString().padStart(2, '0');
   return strNum;
 }
 class BaseInfos<T = any> {
@@ -39,8 +39,8 @@ export class AirCompressorInfos extends BaseInfos {
     this.equipmentList = [];
     for (let i = 1; i <= this.count; i++) {
       const equipment = {
-        name: `空压机_${formatNumberWithZero(i)}`,
-        key: `kongyaji_${formatNumberWithZero(i)}`,
+        name: `空压机_${formatNumberPadZero(i)}`,
+        key: `kongyaji_${formatNumberPadZero(i)}`,
         排气压力: { value: generateRandomNumber(7, 14) / 10, unit: 'MPa', min: 0.7, max: 1.3 },
         第二级进口压力: { value: generateRandomNumber(7, 8) / 10, unit: 'Mpa', min: 0.7, max: 0.8 },
         第二级排放压力: { value: generateRandomNumber(7, 13) / 10, unit: 'Mpa', min: 0.7, max: 1.3 },
@@ -64,8 +64,8 @@ export class BlankingPressInfos extends BaseInfos {
     this.equipmentList = [];
     for (let i = 1; i <= this.count; i++) {
       const equipment = {
-        name: `冲压机_${formatNumberWithZero(i)}`,
-        key: `chongyaji_${formatNumberWithZero(i)}`,
+        name: `冲压机_${formatNumberPadZero(i)}`,
+        key: `chongyaji_${formatNumberPadZero(i)}`,
         冲压次数: { value: generateRandomNumber(200, 1205), unit: '次/分钟', min: 200, max: 1200 },
         历史冲压次数: { value: generateRandomNumber(200, 1200), unit: '次/分钟', min: 200, max: 1200 },
       };
@@ -82,8 +82,8 @@ export class InjectionMoldingMachineInfos extends BaseInfos {
     this.equipmentList = [];
     for (let i = 1; i <= this.count; i++) {
       const equipment = {
-        name: `注塑机_${formatNumberWithZero(i)}`,
-        key: `zhusuji_${formatNumberWithZero(i)}`,
+        name: `注塑机_${formatNumberPadZero(i)}`,
+        key: `zhusuji_${formatNumberPadZero(i)}`,
         峰值压力: { value: generateRandomNumber(50, 150), unit: 'MPa', min: 50, max: 150 },
         最小缓冲: { value: generateRandomNumber(3, 6), unit: '次/分钟', min: 3, max: 5 },
         'V-P位置': { value: generateRandomNumber(3, 5), unit: '次/分钟', min: 3, max: 5 },
@@ -102,8 +102,8 @@ export class WavesolderingInfos extends BaseInfos {
     this.equipmentList = [];
     for (let i = 1; i <= this.count; i++) {
       const equipment = {
-        name: `波峰焊_${formatNumberWithZero(i)}`,
-        key: `bofenghan_${formatNumberWithZero(i)}`,
+        name: `波峰焊_${formatNumberPadZero(i)}`,
+        key: `bofenghan_${formatNumberPadZero(i)}`,
         顶部预热: { value: generateRandomNumber(90, 131), unit: '°C', min: 90, max: 130 },
         底部预热: { value: generateRandomNumber(90, 120), unit: '°C', min: 90, max: 120 },
         锡缸热桥: { value: generateRandomNumber(250, 265), unit: '°C', min: 250, max: 265 },

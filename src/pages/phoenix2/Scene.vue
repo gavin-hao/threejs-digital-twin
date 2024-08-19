@@ -238,7 +238,7 @@ onMounted(async () => {
   const animations = model.animations;
   // 把动画关联的Mesh 名称改成一致的 否则动画不能正确执行
   model.traverse((item) => {
-    if (item.name.startsWith('chongyaji_')) {
+    if (item.name.startsWith('chongyaji_') && item.parent?.name === 'phoenix') {
       chongyajiList.push(item);
     }
   });

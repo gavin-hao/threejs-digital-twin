@@ -107,7 +107,7 @@ class PlayerControls extends THREE.EventDispatcher<any> {
     // 相机初始观察点
     const targetStartPoint: THREE.Vector3 = controls.target.clone();
     const targetEndPoint = center.clone();
-    const eventdispatcher = this.dispatchEvent;
+    const eventdispatcher = this.dispatchEvent.bind(this);
     new TWEEN.Tween({
       // 不管相机此刻处于什么状态，直接读取当前的位置和目标观察点
       x: cameraPositionStart.x,
