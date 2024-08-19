@@ -224,24 +224,24 @@ onMounted(async () => {
   // loadmanager.onLoad=()
   const scene = await player.loader.loadFile(url, loadmanager);
 
-  scene.traverse((item) => {
-    console.log(item);
-    // if (!(item instanceof THREE.Object3D)) {
-    //   return;
-    // }
-    // if (isZhusuji(item) || isChongyaji(item) || isKongyaji(item) || isBofenghan(item)) {
-    //   for (let i = 0; i < item.children.length; i++) {
-    //     const group = item.children[i];
-    //     //递归遍历chooseObj，并给chooseObj的所有子孙后代设置一个ancestors属性指向自己
-    //     group.traverse(function (obj) {
-    //       if (obj instanceof THREE.Mesh) {
-    //         (obj as Object3DWrap).ancestors = item;
-    //       }
-    //     });
-    //   }
-    //   intersectObjects.push(item);
-    // }
-  });
+  // scene.traverse((item) => {
+  // console.log(item);
+  // if (!(item instanceof THREE.Object3D)) {
+  //   return;
+  // }
+  // if (isZhusuji(item) || isChongyaji(item) || isKongyaji(item) || isBofenghan(item)) {
+  //   for (let i = 0; i < item.children.length; i++) {
+  //     const group = item.children[i];
+  //     //递归遍历chooseObj，并给chooseObj的所有子孙后代设置一个ancestors属性指向自己
+  //     group.traverse(function (obj) {
+  //       if (obj instanceof THREE.Mesh) {
+  //         (obj as Object3DWrap).ancestors = item;
+  //       }
+  //     });
+  //   }
+  //   intersectObjects.push(item);
+  // }
+  // });
   scene.name = 'steelmill';
   // console.log('loaded scene', scene, intersectObjects);
   // const radiansPerSecond = THREE.MathUtils.degToRad(30);
@@ -249,35 +249,10 @@ onMounted(async () => {
 
   //播放动画
   const model = player.scene.getObjectByName('steelmill')!;
-
   const animations = model.animations;
-  console.log('animations', animations);
   for (const ani of animations) {
     player.addAnimation(animations, ani.name, model);
   }
-  // 把动画关联的Mesh 名称改成一致的 否则动画不能正确执行
-  // model.traverse((item) => {
-  //   if (item.name.startsWith('chongyaji_')) {
-  //     chongyajiList.push(item);
-  //   }
-  // });
-  // chongyajiList.forEach((chongyaji) => {
-  //   chongyaji.traverse((mesh) => {
-  //     if (mesh.type === 'Bone' && mesh.userData.name) {
-  //       mesh.name = mesh.userData.name;
-  //     }
-  //   });
-  // });
-  // console.log(animations);
-  // for (let object of chongyajiList) {
-  //   player.addAnimation(animations, 'chongyaji|Chongyaji|BaseLayer', object);
-  // }
-  // if (chuansongdaiObject) {
-  //   // player.addAnimation(animations, 'Dummy001|chuansongdai|BaseLayer', chuansongdaiObject);
-  // }
-  // if (jixiebiObject) {
-  //   player.addAnimation(animations, 'jixiebi|jxb2|BaseLayer', jixiebiObject);
-  // }
 
   // 创建弹窗的css2d模型
   popoverObject = new CSS2DObject(popoverRef.value!);
@@ -285,6 +260,7 @@ onMounted(async () => {
   player.renderer!.toneMappingExposure = 0.5;
   player.renderer!.shadowMap.type = THREE.VSMShadowMap;
   player.scene.traverse((item) => {
+    console.log(item.name, item);
     if (item.type == 'Mesh' || item.type == 'Bone') {
       item.castShadow = true;
       item.receiveShadow = true;
