@@ -221,6 +221,7 @@ onMounted(async () => {
   loading.value = true;
   const url = '/models/steelmill/scene.glb';
   const loadmanager = THREE.DefaultLoadingManager;
+
   // loadmanager.onLoad=()
   const scene = await player.loader.loadFile(url, loadmanager);
 
@@ -260,16 +261,51 @@ onMounted(async () => {
   player.renderer!.toneMappingExposure = 0.5;
   player.renderer!.shadowMap.type = THREE.VSMShadowMap;
   player.scene.traverse((item) => {
-    console.log(item.name, item);
+    // console.log(item.name, item);
     if (item.type == 'Mesh' || item.type == 'Bone') {
       item.castShadow = true;
       item.receiveShadow = true;
+    }
+    if (item.name.split('_')[0] === 'Arrow') {
+      console.error(item.name, item.rotation.x, item.rotation.y, item.rotation.z);
+      console.error(item.name, item.position.x, item.position.y, item.position.z);
+
+      // item.update
+      // const cube = new THREE.Mesh( geometry, material );
+      // scene.add( cube );
     }
   });
   player.play();
 
   loading.value = false;
+  render();
+  // requestAnimationFrame(render);
 });
+
+function render() {
+  player.scene.traverse((item) => {
+    if (item.name.split('_')[0] === 'Arrow') {
+      const diff = (item.rotation.z || 0).toFixed(2);
+      if (Math.abs(diff) < 0.01) {
+        console.log('前');
+      }
+      if (diff < 0 && Math.abs(diff + Math.PI / 2) <= 0.01) {
+        console.log('右');
+      }
+      if (diff > 0 && Math.abs(diff - Math.PI / 2) <= 0.01) {
+        console.log('左');
+      }
+      if (Math.abs(diff - Math.PI) <= 0.01) {
+        console.log('后');
+      }
+      //const { x, y, z } = item.position;
+      //item.position.set(1, 1, 1);
+    }
+  });
+  //renderer.render(scene, camera);
+  requestAnimationFrame(render);
+}
+
 // const isZhusuji = (object: THREE.Object3D) => {
 //   return object.name?.includes('zhusuji_');
 // };
@@ -282,6 +318,7 @@ onMounted(async () => {
 // const isBofenghan = (object: THREE.Object3D) => {
 //   return object.name?.includes('bofenghan_');
 // };
+
 let chooseObject: THREE.Object3D | null = null;
 function onSelected(object?: THREE.Object3D) {
   const selectObject = object; //(object as Object3DWrap).ancestors;
