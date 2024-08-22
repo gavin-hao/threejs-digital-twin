@@ -13,7 +13,7 @@ _DEFAULT_CAMERA.name = 'Camera';
 _DEFAULT_CAMERA.position.set(0, 5, 10);
 _DEFAULT_CAMERA.lookAt(new THREE.Vector3());
 
-let time: number, startTime: number, prevTime: number;
+let time: number, startTime: number; // prevTime: number;
 const clock = new THREE.Clock();
 // type EventListenerHandler = (...params: any[]) => void;
 type Events = {
@@ -243,10 +243,10 @@ export class Player {
     const animate = () => {
       time = performance.now();
       this.renderer?.render(this.scene!, this.camera!);
+      const delta = clock.getDelta();
 
       try {
-        this.events.update.dispatch({ time: time - startTime, delta: time - prevTime });
-        const delta = clock.getDelta();
+        this.events.update.dispatch({ time: time - startTime, delta: delta });
         for (const mixer of this.mixers) {
           mixer.update(delta);
         }
@@ -255,10 +255,10 @@ export class Player {
         console.error(e.message || e, e.stack || '');
       }
 
-      prevTime = time;
+      // prevTime = time;
     };
 
-    startTime = prevTime = performance.now();
+    startTime = performance.now();
 
     this.dom.addEventListener('click', this.onClick.bind(this));
 

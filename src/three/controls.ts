@@ -28,6 +28,7 @@ class PlayerControls extends THREE.EventDispatcher<any> {
     this.orbitControls.maxDistance = options?.minDistance || 100;
     this.orbitControls.enableDamping = options?.enableDamping || false; //启用阻尼
     this.orbitControls.enabled = options?.enabled ?? true;
+    this.orbitControls.maxPolarAngle = THREE.MathUtils.degToRad(90);
     this.addDomEvents();
 
     this.orbitControls.addEventListener('change', () => {

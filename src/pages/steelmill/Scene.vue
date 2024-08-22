@@ -50,7 +50,8 @@ import {
   OutlinePass,
   OutputPass,
   RenderPass,
-  // SMAAPass,
+  SMAAPass,
+  RGBELoader,
 } from 'three/examples/jsm/Addons.js';
 import { useContext } from './context';
 
@@ -105,27 +106,27 @@ onMounted(async () => {
   player.addCSS2DRenderer();
   player.addCSS3Renderer();
   player.addControls();
-  player.addLight();
+  // player.addLight();
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 6);
-  directionalLight.position.set(-11, 15, -25);
-  directionalLight.castShadow = false;
-  directionalLight.shadow.camera.left = -100;
-  directionalLight.shadow.camera.right = 100;
-  directionalLight.shadow.camera.top = 100;
-  directionalLight.shadow.camera.bottom = -100;
-  directionalLight.shadow.camera.near = 0.5;
-  directionalLight.shadow.camera.far = 100;
-  directionalLight.shadow.mapSize.set(1024, 1024);
-  directionalLight.shadow.radius = 2;
-  player.addLight(directionalLight);
-  const ambientLight = new THREE.AmbientLight(0xfefefe, 1);
-  // scene.value!.add(ambientLight);
-  player.addLight(ambientLight);
+  // const directionalLight = new THREE.DirectionalLight(0xffffff, 6);
+  // directionalLight.position.set(-11, 15, -25);
+  // directionalLight.castShadow = false;
+  // directionalLight.shadow.camera.left = -100;
+  // directionalLight.shadow.camera.right = 100;
+  // directionalLight.shadow.camera.top = 100;
+  // directionalLight.shadow.camera.bottom = -100;
+  // directionalLight.shadow.camera.near = 0.5;
+  // directionalLight.shadow.camera.far = 100;
+  // directionalLight.shadow.mapSize.set(1024, 1024);
+  // directionalLight.shadow.radius = 2;
+  // player.addLight(directionalLight);
+  // const ambientLight = new THREE.AmbientLight(0xfefefe, 1);
+  // // scene.value!.add(ambientLight);
+  // player.addLight(ambientLight);
 
-  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 3);
-  hemisphereLight.position.set(0, 8, 0);
-  player.addLight(hemisphereLight);
+  // const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 3);
+  // hemisphereLight.position.set(0, 8, 0);
+  // player.addLight(hemisphereLight);
   // const lightPanel = gui.addFolder('PointLight');
   // lightPanel.add(directLight, 'intensity', 0, 50).name('intensity');
   // lightPanel.add(directLight, 'intensity', 0, 50).name('intensity');
@@ -167,11 +168,11 @@ onMounted(async () => {
   composer.addPass(outlinePass);
   const outputPass = new OutputPass();
   composer.addPass(outputPass);
-  // const pixelRatio = player.renderer!.getPixelRatio();
-  // // width、height是canva画布的宽高度
-  // const { offsetWidth: width, offsetHeight: height } = player.cavans;
-  // const smaaPass = new SMAAPass(width * pixelRatio, height * pixelRatio);
-  // composer.addPass(smaaPass);
+  const pixelRatio = player.renderer!.getPixelRatio();
+  // width、height是canva画布的宽高度
+  const { offsetWidth: width, offsetHeight: height } = player.cavans;
+  const smaaPass = new SMAAPass(width * pixelRatio, height * pixelRatio);
+  composer.addPass(smaaPass);
   // 创建一个CSS3渲染器CSS3DRenderer
   const effectPanel = gui.addFolder('effect');
   effectPanel.add(effectParams, 'edgeStrength', 0.01, 50).onChange(function (value) {
@@ -206,10 +207,6 @@ onMounted(async () => {
 
   player.events.start.add(() => {
     console.log('start run play ');
-  });
-  player.events.update.add(() => {
-    // console.log('compser render', composer.passes);
-    composer.render();
   });
 
   player.events.objectSelected.add((obj: THREE.Object3D) => {
@@ -246,6 +243,14 @@ onMounted(async () => {
   // console.log('loaded scene', scene, intersectObjects);
   // const radiansPerSecond = THREE.MathUtils.degToRad(30);
   player.addObject(scene);
+  const lightProbe = new THREE.LightProbe();
+  player.scene.add(lightProbe);
+  // 加载hdr材质 并设置环境光贴图
+  const rgbeLoader = new RGBELoader();
+  const envMap = await rgbeLoader.loadAsync('/textures/skybox/industrial_sunset_02_puresky_4k.hdr ');
+  envMap.mapping = THREE.EquirectangularReflectionMapping;
+  player.scene.background = envMap;
+  player.scene.environment = envMap;
 
   //播放动画
   const model = player.scene.getObjectByName('steelmill')!;
@@ -253,23 +258,46 @@ onMounted(async () => {
   for (const ani of animations) {
     player.addAnimation(animations, ani.name, model);
   }
-
+  player.controls?.addEventListener('change', (ev) => {
+    console.log('camera', ev.target.target, ev.target.object.position, player.camera!.position);
+  });
+  player.camera!.position.set(77.28891138290378, 10.780050655428802, -31.473666038460415);
   // 创建弹窗的css2d模型
   popoverObject = new CSS2DObject(popoverRef.value!);
   player.renderer!.toneMapping = THREE.ACESFilmicToneMapping;
-  player.renderer!.toneMappingExposure = 0.5;
-  player.renderer!.shadowMap.type = THREE.VSMShadowMap;
+  player.renderer!.toneMappingExposure = 0.8;
+  player.renderer!.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const arrowTexture = await new THREE.TextureLoader().loadAsync('/textures/arrow.svg');
+  arrowTexture.needsUpdate = true;
+  arrowTexture.wrapS = THREE.RepeatWrapping;
+  arrowTexture.wrapT = THREE.RepeatWrapping;
+  // arrowTexture.repeat.x = 1;
+  // arrowTexture.repeat.y = 1;
   player.scene.traverse((item) => {
     console.log(item.name, item);
+    if (item instanceof THREE.Mesh && item.userData.name === 'Arrow') {
+      item.material.transparent = true;
+      (item.material as THREE.MeshBasicMaterial).map = arrowTexture;
+      (item.material as THREE.MeshBasicMaterial).side = THREE.DoubleSide;
+      return;
+    }
     if (item.type == 'Mesh' || item.type == 'Bone') {
       item.castShadow = true;
       item.receiveShadow = true;
     }
   });
+
+  player.events.update.add(({ delta }) => {
+    // console.log('update', delta);
+    arrowTexture.offset.x -= delta * 0.7;
+    composer.render();
+  });
   player.play();
 
   loading.value = false;
 });
+
 // const isZhusuji = (object: THREE.Object3D) => {
 //   return object.name?.includes('zhusuji_');
 // };
