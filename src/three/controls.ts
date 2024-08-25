@@ -100,13 +100,13 @@ class PlayerControls extends THREE.EventDispatcher<any> {
     box.getCenter(center);
     distance = box.getBoundingSphere(sphere).radius;
 
-    // const quaternion = new THREE.Quaternion();
-    // target.getWorldQuaternion(quaternion);
-    // // quaternion.copy(camera.quaternion);
+    const quaternion = new THREE.Quaternion();
+    target.getWorldQuaternion(quaternion);
+    quaternion.copy(camera.quaternion);
     // //相机以45度角俯视
-    // quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 4));
+    quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 4));
     delta.set(0, 0, 1);
-    // delta.applyQuaternion(quaternion);
+    delta.applyQuaternion(quaternion);
     delta.multiplyScalar(distance * scalar);
 
     const cameraPositionStart = camera.position.clone();
