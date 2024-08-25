@@ -36,7 +36,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { ElProgress } from 'element-plus';
 import { Player } from '@/three';
 import * as THREE from 'three';
@@ -361,6 +361,9 @@ const handleFocusTo = (focusKey: string) => {
     onSelected(object);
   }
 };
+onUnmounted(() => {
+  player?.dispose();
+});
 </script>
 <style lang="scss" scoped>
 #viewport {

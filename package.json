@@ -17,6 +17,7 @@
   "dependencies": {
     "@tweenjs/tween.js": "^23.1.2",
     "@vueuse/core": "^10.11.0",
+    "echarts": "^5.5.1",
     "element-plus": "^2.7.6",
     "lodash": "^4.17.21",
     "mitt": "^3.0.1",

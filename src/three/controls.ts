@@ -25,7 +25,7 @@ class PlayerControls extends THREE.EventDispatcher<any> {
     this.domElement = domElement;
     this.orbitControls = new OrbitControls(this.object, this.domElement);
     this.orbitControls.minDistance = options?.minDistance || 5;
-    this.orbitControls.maxDistance = options?.minDistance || 100;
+    this.orbitControls.maxDistance = options?.maxDistance || 100;
     this.orbitControls.enableDamping = options?.enableDamping || false; //启用阻尼
     this.orbitControls.enabled = options?.enabled ?? true;
     this.orbitControls.maxPolarAngle = THREE.MathUtils.degToRad(90);
@@ -61,8 +61,14 @@ class PlayerControls extends THREE.EventDispatcher<any> {
    * Returns the distance from the camera to the target.
    * @returns number
    */
-  public getDistence() {
+  public getDistance() {
     return this.orbitControls.getDistance();
+  }
+  get maxDistance() {
+    return this.orbitControls.maxDistance;
+  }
+  set maxDistance(value: number) {
+    this.orbitControls.maxDistance = value;
   }
   /**
    * 将相机聚焦到指定的物体，并拉近相机距离
@@ -94,13 +100,13 @@ class PlayerControls extends THREE.EventDispatcher<any> {
     box.getCenter(center);
     distance = box.getBoundingSphere(sphere).radius;
 
-    const quaternion = new THREE.Quaternion();
-    target.getWorldQuaternion(quaternion);
-    // quaternion.copy(camera.quaternion);
-    //相机以45度角俯视
-    quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 4));
+    // const quaternion = new THREE.Quaternion();
+    // target.getWorldQuaternion(quaternion);
+    // // quaternion.copy(camera.quaternion);
+    // //相机以45度角俯视
+    // quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 4));
     delta.set(0, 0, 1);
-    delta.applyQuaternion(quaternion);
+    // delta.applyQuaternion(quaternion);
     delta.multiplyScalar(distance * scalar);
 
     const cameraPositionStart = camera.position.clone();

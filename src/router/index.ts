@@ -22,6 +22,12 @@ export const routes = [
     meta: { title: '钢铁厂数字孪生平台' },
     component: () => import('@/pages/steelmill/Index.vue'),
   },
+  {
+    name: 'warehouse',
+    path: '/warehouse',
+    meta: { title: 'X仓库数字孪生' },
+    component: () => import('@/pages/warehouse/Index.vue'),
+  },
 ];
 
 const router = createRouter({

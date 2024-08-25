@@ -1,6 +1,6 @@
 <template>
   <div id="viewport" ref="viewport">
-    <div class="popover" ref="popoverRef" v-show="false">
+    <!-- <div class="popover" ref="popoverRef" v-show="false">
       <div class="popover-content">
         <div class="title">{{ selectedObjectInfo?.name }}</div>
         <div class="body">
@@ -22,12 +22,12 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="warning" ref="warnIconRef" v-show="false">
+    </div> -->
+    <!-- <div class="warning" ref="warnIconRef" v-show="false">
       <div class="warning-content">
         <img src="@/assets/images/warn_fill.svg" alt="warn" />
       </div>
-    </div>
+    </div> -->
     <div class="progress" v-if="loading">
       <div class="progress-inner">
         <el-progress :percentage="50" :indeterminate="true" :show-text="false"> </el-progress>
@@ -36,11 +36,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { ElProgress } from 'element-plus';
 import { Player } from '@/three';
 import * as THREE from 'three';
-import { Object3DWrap } from '@/hooks/useThree/Object3dWrap';
+// import { Object3DWrap } from '@/hooks/useThree/Object3dWrap';
 import { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import Stats from 'three/addons/libs/stats.module.js';
@@ -70,15 +70,16 @@ if (process.env.NODE_ENV === 'development') {
 const gui = new GUI();
 
 const viewport = ref<HTMLElement>();
-const popoverRef = ref<HTMLElement>();
+// const popoverRef = ref<HTMLElement>();
 const warnIconRef = ref<HTMLElement>();
+
 // let intersectObjects: Array<THREE.Object3D> = [];
 let popoverObject: CSS2DObject;
 const selectedObjectInfo = ref<{ [key: string]: unknown }>();
 const context = useContext();
 const loading = ref<boolean>(true);
 const equipmentInfos = computed(() => {
-  return [] as Array<any>;
+  return context.status?.value || [];
 });
 let composer: EffectComposer, outlinePass: OutlinePass;
 const effectParams = {
@@ -97,63 +98,29 @@ onMounted(async () => {
 
   player.setSize(viewport.value!.offsetWidth, viewport.value!.offsetHeight);
   player.setPixelRatio(window.devicePixelRatio);
+  player.scene.fog = new THREE.Fog(0xcccccc, 2, 450);
 
   viewport.value!.appendChild(player.dom);
 
   context.events.warn.add(showWarnIcon);
   context.events.focusTo.add(handleFocusTo);
 
-  player.addCSS2DRenderer();
-  player.addCSS3Renderer();
+  // player.addCSS2DRenderer();
+  // player.addCSS3Renderer();
   player.addControls();
-  // player.addLight();
 
-  // const directionalLight = new THREE.DirectionalLight(0xffffff, 6);
-  // directionalLight.position.set(-11, 15, -25);
-  // directionalLight.castShadow = false;
-  // directionalLight.shadow.camera.left = -100;
-  // directionalLight.shadow.camera.right = 100;
-  // directionalLight.shadow.camera.top = 100;
-  // directionalLight.shadow.camera.bottom = -100;
-  // directionalLight.shadow.camera.near = 0.5;
-  // directionalLight.shadow.camera.far = 100;
-  // directionalLight.shadow.mapSize.set(1024, 1024);
-  // directionalLight.shadow.radius = 2;
-  // player.addLight(directionalLight);
-  // const ambientLight = new THREE.AmbientLight(0xfefefe, 1);
-  // // scene.value!.add(ambientLight);
-  // player.addLight(ambientLight);
-
-  // const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 3);
-  // hemisphereLight.position.set(0, 8, 0);
-  // player.addLight(hemisphereLight);
-  // const lightPanel = gui.addFolder('PointLight');
-  // lightPanel.add(directLight, 'intensity', 0, 50).name('intensity');
-  // lightPanel.add(directLight, 'intensity', 0, 50).name('intensity');
-  // lightPanel.add(directLight.position, 'x').name('position.x');
-  // lightPanel.add(directLight.position, 'y').name('position.y');
-  // lightPanel.add(directLight.position, 'z').name('position.z');
-  // lightPanel.addColor(directLight, 'color').onChange(function (value) {
-  //   directLight.color.set(value);
-  // });
   if (process.env.NODE_ENV !== 'development') {
     gui.hide();
   }
-  //Set up shadow properties for the light
-  // pointLight.shadow.mapSize.width = 512; // default
-  // pointLight.shadow.mapSize.height = 512; // default
-  // pointLight.shadow.camera.near = 0.5; // default
-  // pointLight.shadow.camera.far = 500; // default
 
-  // player.addLight(directLight);
-  player.scene.fog = new THREE.Fog(0xcccccc, 2, 350);
   composer = new EffectComposer(player.renderer!);
   player.events.resize.add((width, height) => {
     composer.setSize(width, height);
   });
-  // player.camera?.lookAt(0, 0, 0);
+
   const renderPass = new RenderPass(player.scene!, player.camera!);
   composer.addPass(renderPass);
+  //#region outlinePass
   outlinePass = new OutlinePass(
     new THREE.Vector2(player.cavans.clientWidth, player.cavans.clientHeight),
     player.scene,
@@ -173,7 +140,7 @@ onMounted(async () => {
   const { offsetWidth: width, offsetHeight: height } = player.cavans;
   const smaaPass = new SMAAPass(width * pixelRatio, height * pixelRatio);
   composer.addPass(smaaPass);
-  // 创建一个CSS3渲染器CSS3DRenderer
+
   const effectPanel = gui.addFolder('effect');
   effectPanel.add(effectParams, 'edgeStrength', 0.01, 50).onChange(function (value) {
     outlinePass.edgeStrength = Number(value);
@@ -204,15 +171,15 @@ onMounted(async () => {
   effectPanel.addColor(effectParams, 'hiddenEdgeColor').onChange(function (value) {
     outlinePass.hiddenEdgeColor.set(value);
   });
-
+  //#endregion
   player.events.start.add(() => {
     console.log('start run play ');
   });
 
   player.events.objectSelected.add((obj: THREE.Object3D) => {
     if (obj) {
-      const selectObject = (obj as Object3DWrap).ancestors;
-      onSelected(selectObject);
+      // const selectObject = (obj as Object3DWrap).ancestors;
+      onSelected(obj);
     }
   });
   loading.value = true;
@@ -221,30 +188,9 @@ onMounted(async () => {
   // loadmanager.onLoad=()
   const scene = await player.loader.loadFile(url, loadmanager);
 
-  // scene.traverse((item) => {
-  // console.log(item);
-  // if (!(item instanceof THREE.Object3D)) {
-  //   return;
-  // }
-  // if (isZhusuji(item) || isChongyaji(item) || isKongyaji(item) || isBofenghan(item)) {
-  //   for (let i = 0; i < item.children.length; i++) {
-  //     const group = item.children[i];
-  //     //递归遍历chooseObj，并给chooseObj的所有子孙后代设置一个ancestors属性指向自己
-  //     group.traverse(function (obj) {
-  //       if (obj instanceof THREE.Mesh) {
-  //         (obj as Object3DWrap).ancestors = item;
-  //       }
-  //     });
-  //   }
-  //   intersectObjects.push(item);
-  // }
-  // });
   scene.name = 'steelmill';
-  // console.log('loaded scene', scene, intersectObjects);
-  // const radiansPerSecond = THREE.MathUtils.degToRad(30);
+
   player.addObject(scene);
-  const lightProbe = new THREE.LightProbe();
-  player.scene.add(lightProbe);
   // 加载hdr材质 并设置环境光贴图
   const rgbeLoader = new RGBELoader();
   const envMap = await rgbeLoader.loadAsync('/textures/skybox/industrial_sunset_02_puresky_4k.hdr ');
@@ -252,18 +198,9 @@ onMounted(async () => {
   player.scene.background = envMap;
   player.scene.environment = envMap;
 
-  //播放动画
-  const model = player.scene.getObjectByName('steelmill')!;
-  const animations = model.animations;
-  for (const ani of animations) {
-    player.addAnimation(animations, ani.name, model);
-  }
-  player.controls?.addEventListener('change', (ev) => {
-    console.log('camera', ev.target.target, ev.target.object.position, player.camera!.position);
-  });
-  player.camera!.position.set(77.28891138290378, 10.780050655428802, -31.473666038460415);
   // 创建弹窗的css2d模型
-  popoverObject = new CSS2DObject(popoverRef.value!);
+  // popoverObject = new CSS2DObject(popoverRef.value!);
+
   player.renderer!.toneMapping = THREE.ACESFilmicToneMapping;
   player.renderer!.toneMappingExposure = 0.8;
   player.renderer!.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -272,10 +209,9 @@ onMounted(async () => {
   arrowTexture.needsUpdate = true;
   arrowTexture.wrapS = THREE.RepeatWrapping;
   arrowTexture.wrapT = THREE.RepeatWrapping;
-  // arrowTexture.repeat.x = 1;
-  // arrowTexture.repeat.y = 1;
+
   player.scene.traverse((item) => {
-    console.log(item.name, item);
+    // console.log(item.name, item);
     if (item instanceof THREE.Mesh && item.userData.name === 'Arrow') {
       item.material.transparent = true;
       (item.material as THREE.MeshBasicMaterial).map = arrowTexture;
@@ -286,6 +222,11 @@ onMounted(async () => {
       item.castShadow = true;
       item.receiveShadow = true;
     }
+    if (item instanceof THREE.Mesh) {
+      item.material.envMap = envMap;
+      item.material.envMapIntensity = 0.8;
+      item.material.needsUpdate = true;
+    }
   });
 
   player.events.update.add(({ delta }) => {
@@ -293,37 +234,42 @@ onMounted(async () => {
     arrowTexture.offset.x -= delta * 0.7;
     composer.render();
   });
+
+  //播放动画
+  const model = player.scene.getObjectByName('steelmill')!;
+  const animations = model.animations;
+  for (const ani of animations) {
+    player.addAnimation(animations, ani.name, model);
+  }
+  // player.controls?.addEventListener('change', (ev) => {
+  //   console.log('camera', ev.target.target, ev.target.object.position, player.camera!.position);
+  // });
+  player.camera!.position.set(49.08655711956998, 15.013313129229896, 29.585290041126118);
   player.play();
 
   loading.value = false;
 });
 
-// const isZhusuji = (object: THREE.Object3D) => {
-//   return object.name?.includes('zhusuji_');
-// };
-// const isChongyaji = (object: THREE.Object3D) => {
-//   return object.name?.includes('chongyaji_');
-// };
-// const isKongyaji = (object: THREE.Object3D) => {
-//   return object.name?.includes('kongyaji_');
-// };
-// const isBofenghan = (object: THREE.Object3D) => {
-//   return object.name?.includes('bofenghan_');
-// };
+function canSelect(object?: THREE.Object3D) {
+  const intersectObjectsKey = equipmentInfos.value.map((v) => v.key);
+  // equipmentInfos.value?.find((v) => v.key == object!.name || v.key == object?.userData.name);
+  return object && intersectObjectsKey.includes(object?.name || object?.userData.name);
+}
 let chooseObject: THREE.Object3D | null = null;
 function onSelected(object?: THREE.Object3D) {
   const selectObject = object; //(object as Object3DWrap).ancestors;
   console.log('selectObject', selectObject);
-  if (!selectObject) {
+
+  if (!selectObject || !canSelect(object)) {
     outlinePass.selectedObjects = [];
     chooseObject?.remove(popoverObject);
     chooseObject = null;
     player.events.objectSelected.dispatch(null);
     return;
   }
-  popoverObject.name = 'tag_' + selectObject.name;
-  popoverObject.center.set(-0.1, 1.1);
-  selectObject.add(popoverObject);
+  // popoverObject.name = 'tag_' + selectObject.name;
+  // popoverObject.center.set(-0.1, 1.1);
+  // selectObject.add(popoverObject);
   chooseObject = selectObject;
   let current = equipmentInfos.value?.find((v) => v.key == selectObject.name);
 
@@ -384,6 +330,9 @@ const handleFocusTo = (focusKey: string) => {
     onSelected(object);
   }
 };
+onUnmounted(() => {
+  player?.dispose();
+});
 </script>
 <style lang="scss" scoped>
 #viewport {
