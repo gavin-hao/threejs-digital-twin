@@ -149,5 +149,49 @@ class PlayerControls extends THREE.EventDispatcher<any> {
       })
       .start();
   }
+
+  focus2(target: THREE.Object3D) {
+    const pos = new THREE.Vector3();
+    target.getWorldPosition(pos);
+    // 相机飞行到的位置和观察目标拉开一定的距离
+    const endPos = pos.clone().addScalar(16);
+    const endTarget = pos;
+    const camera = this.object;
+    const controls = this.orbitControls;
+    const cameraStartPos = camera.position;
+    const controlsPos = controls.target;
+    new TWEEN.Tween({
+      // 不管相机此刻处于什么状态，直接读取当前的位置和目标观察点
+      x: cameraStartPos.x,
+      y: cameraStartPos.y,
+      z: cameraStartPos.z,
+      tx: controlsPos.x,
+      ty: controlsPos.y,
+      tz: controlsPos.z,
+    })
+      .to(
+        {
+          // 动画结束相机位置坐标
+          x: endPos.x,
+          y: endPos.y,
+          z: endPos.z,
+          // 动画结束相机指向的目标观察点
+          tx: endTarget.x,
+          ty: endTarget.y,
+          tz: endTarget.z,
+        },
+        1000
+      )
+      .easing(Easing.Quadratic.Out)
+      .onUpdate(function (obj) {
+        // 动态改变相机位置
+        camera.position.set(obj.x, obj.y, obj.z);
+        // 动态计算相机视线
+        // camera.lookAt(obj.tx, obj.ty, obj.tz);
+        controls.target.set(obj.tx, obj.ty, obj.tz);
+        controls.update(); //内部会执行.lookAt()
+      })
+      .start();
+  }
 }
 export default PlayerControls;

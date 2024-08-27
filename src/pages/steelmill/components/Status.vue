@@ -24,7 +24,7 @@ const slots = useSlots();
 <style lang="scss" scoped>
 .status-container {
   --body-text-color: #0ff37b;
-  --border-frame-color: #2ae3f3;
+  --border-frame-color: #0ff37b;
   --background-color: rgba(7, 85, 140, 0.3);
   --boder-color: rgba(99, 145, 180, 0.3);
   --box-shadow-color: rgba(5, 157, 222, 0.25);
@@ -102,14 +102,14 @@ const slots = useSlots();
   }
   &.status-container-frame {
     background:
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -2px top -16px,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -2px top -2px,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -2px top -16px,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -2px top -2px,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -2px bottom -16px,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -2px bottom -2px,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -2px bottom -16px,
-      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -2px bottom -2px;
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -4px top -8px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -4px top -4px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -4px top -8px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -4px top -4px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -4px bottom -8px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -4px bottom -4px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -4px bottom -8px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -4px bottom -4px;
     background-repeat: no-repeat;
     background-size:
       4px 22px,

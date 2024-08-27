@@ -68,7 +68,7 @@ export class Player {
     this.resizeObserver.observe(this.dom);
     this.selector = new Selector(this);
     this.events.objectFocused.add((object) => {
-      this.controls?.focus(object);
+      this.controls?.focus2(object);
     });
   }
 
