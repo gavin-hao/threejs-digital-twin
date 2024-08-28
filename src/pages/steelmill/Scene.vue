@@ -157,8 +157,9 @@ onMounted(async () => {
       item.position.y = 0.01;
       item.scale.set(5, 2, 1);
       item.material.transparent = true;
-      (item.material as THREE.MeshBasicMaterial).map = arrowTexture;
-      (item.material as THREE.MeshBasicMaterial).side = THREE.DoubleSide;
+      (item.material as THREE.MeshStandardMaterial).map = arrowTexture;
+      (item.material as THREE.MeshStandardMaterial).side = THREE.DoubleSide;
+      (item.material as THREE.MeshStandardMaterial).emissive = new THREE.Color(0.8, 0.12, 0.12);
       return;
     }
     if (item.type == 'Mesh' || item.type == 'Bone') {
