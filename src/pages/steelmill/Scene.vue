@@ -159,7 +159,9 @@ onMounted(async () => {
       item.material.transparent = true;
       (item.material as THREE.MeshStandardMaterial).map = arrowTexture;
       (item.material as THREE.MeshStandardMaterial).side = THREE.DoubleSide;
-      (item.material as THREE.MeshStandardMaterial).emissive = new THREE.Color(0.8, 0.12, 0.12);
+      (item.material as THREE.MeshStandardMaterial).emissive = new THREE.Color(230, 160, 0);
+      (item.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.01;
+      // (item.material as THREE.MeshStandardMaterial).emissiveMap = arrowTexture;
       return;
     }
     if (item.type == 'Mesh' || item.type == 'Bone') {
