@@ -70,6 +70,36 @@ class PlayerControls extends THREE.EventDispatcher<any> {
   set maxDistance(value: number) {
     this.orbitControls.maxDistance = value;
   }
+  set minDistance(value: number) {
+    this.orbitControls.minDistance = value;
+  }
+  set dampingFactor(value: number) {
+    this.orbitControls.dampingFactor = value;
+  }
+  set enableDamping(value: boolean) {
+    this.orbitControls.enableDamping = value;
+  }
+  set autoRotate(value: boolean) {
+    this.orbitControls.autoRotate = value;
+  }
+  set autoRotateSpeed(value: number) {
+    this.orbitControls.autoRotateSpeed = value;
+  }
+  set maxPolarAngle(value: number) {
+    this.orbitControls.maxPolarAngle = value;
+  }
+  set minPolarAngle(value: number) {
+    this.orbitControls.minPolarAngle = value;
+  }
+  set minAzimuthAngle(value: number) {
+    this.orbitControls.minAzimuthAngle = value;
+  }
+  set maxAzimuthAngle(value: number) {
+    this.orbitControls.maxAzimuthAngle = value;
+  }
+  set enablePan(value: boolean) {
+    this.orbitControls.enablePan = value;
+  }
   /**
    * 将相机聚焦到指定的物体，并拉近相机距离
    * @param target Object3D - 聚焦的目标
