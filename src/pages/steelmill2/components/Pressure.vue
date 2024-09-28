@@ -95,6 +95,7 @@ const option = computed(() => {
 </script>
 <style lang="scss" scoped>
 .guage-chart {
+  max-width: 200px;
   height: 100px;
 }
 </style>

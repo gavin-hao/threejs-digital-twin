@@ -5,8 +5,8 @@
         <div class="title">钢铁厂数字孪生平台</div>
       </Header>
     </template>
-    <template #left v-if="showMask">
-      <div class="panels">
+    <template #left v-if="showSider">
+      <div class="panels" :style="{ '--max-panel-width': `${maxPanelWidth}` }">
         <div class="status-list">
           <Status
             status="success"
@@ -111,8 +111,8 @@
         </div>
       </div>
     </template>
-    <template #right v-if="showMask">
-      <div class="panels">
+    <template #right v-if="showSider">
+      <div class="panels" :style="{ '--max-panel-width': `${maxPanelWidth}` }">
         <div class="status-list col-2">
           <Status
             status="success"
@@ -265,7 +265,7 @@
     </template>
     <template #main>
       <Scene ref="sceneRef" />
-      <!-- <div v-if="showMask" class="mask"></div> -->
+      <div v-if="showMask" class="mask"></div>
     </template>
   </LayoutScreen>
 </template>
@@ -283,7 +283,9 @@ import Pressure from './components/Pressure.vue';
 import Statistic from './components/Statistic.vue';
 const sceneRef = ref();
 const showMask = ref(true);
+const showSider = ref(true);
 const status = ref<any[]>([]);
+const maxPanelWidth = ref<string>('100%');
 const events: {
   focusTo: signals.Signal<any>;
   warn: signals.Signal<any>;
@@ -324,7 +326,18 @@ const dispatchFocus = (focusKey: string) => {
   // }
   events.focusTo.dispatch(focusKey);
 };
+// onMounted(() => {
+//   // 设置panels 最大宽度
+//   const width = document.body.clientWidth;
+//   let panelWidth = width * 0.25;
 
+//   if (width > 1920) {
+//     panelWidth = 1920 * 0.3;
+//   }
+
+//   maxPanelWidth.value = `${panelWidth}px`;
+//   // console.log('width', width, 'panelWidth', panelWidth, 'showSider', showSider.value);
+// });
 provide(injectContextKey, {
   events,
   status,
@@ -336,6 +349,8 @@ provide(injectContextKey, {
   flex: 1;
   flex-direction: column;
   gap: 12px;
+  width: var(--max-panel-width, 100%);
+  max-width: var(--max-panel-width, 100%);
   // grid-gap: 8px;
   height: 100%;
   overflow: hidden;
@@ -382,7 +397,7 @@ provide(injectContextKey, {
 .status-grid {
   display: flex;
   flex: 1;
-  gap: 4;
+  // gap: 4px;
   align-items: center;
   justify-content: space-around;
   text-align: center;
@@ -422,7 +437,12 @@ provide(injectContextKey, {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  background-image: radial-gradient(circle at center, transparent 0%, rgba(18, 19, 40, 0.5) 100%),
+  background-image: radial-gradient(
+      circle at center,
+      transparent 0%,
+      rgba(18, 19, 40, 0.1) 70%,
+      rgba(18, 19, 40, 0.8) 100%
+    ),
     linear-gradient(
       to right,
       rgba(18, 19, 40, 0.8) 0%,

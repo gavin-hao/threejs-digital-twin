@@ -50,7 +50,7 @@
       z-index: 100;
       display: flex;
       grid-gap: 10px;
-      width: 25vw;
+      width: min(25vw, 480px);
       pointer-events: none;
       transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
       // height: calc(100% - 1rem);
@@ -63,7 +63,8 @@
       z-index: 100;
       display: flex;
       grid-gap: 10px;
-      width: 25vw;
+      justify-content: end;
+      width: min(25vw, 480px);
       pointer-events: none;
       transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
     }

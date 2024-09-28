@@ -44,12 +44,53 @@ class PlayerControls extends THREE.EventDispatcher<any> {
 
   private onClick(_event: MouseEvent) {}
   private onDoubleClick() {
-    this.orbitControls.reset();
+    this.reset();
   }
   private onPointerMove() {}
 
   public reset() {
-    this.orbitControls.reset();
+    // this.orbitControls.reset();
+    const camera = this.object;
+    const controls = this.orbitControls;
+
+    const target = controls.target0.clone();
+    const position = controls.position0.clone();
+
+    new TWEEN.Tween({
+      // target: controls.target,
+      tx: controls.target.x,
+      ty: controls.target.y,
+      tz: controls.target.z,
+      x: camera.position.x,
+      y: camera.position.y,
+      z: camera.position.z,
+      // position: controls.object.position,
+      // zoom: controls.object.,
+    })
+      .to(
+        {
+          tx: target.x,
+          ty: target.y,
+          tz: target.z,
+          x: position.x,
+          y: position.y,
+          z: position.z,
+          // target: target,
+          // position: position,
+          // zoom: zoom,
+        },
+        1000
+      )
+      .easing(Easing.Quadratic.Out)
+      .onUpdate(function (obj) {
+        // 动态改变相机位置
+        camera.position.set(obj.x, obj.y, obj.z);
+        // 动态计算相机视线
+        // camera.lookAt(obj.tx, obj.ty, obj.tz);
+        controls.target.set(obj.tx, obj.ty, obj.tz);
+        controls.update(); //内部会执行.lookAt()
+      })
+      .start();
   }
   public saveState() {
     this.orbitControls.saveState();
