@@ -182,7 +182,7 @@ onMounted(async () => {
   const rgbeLoader = new RGBELoader();
   const envMap = await rgbeLoader.loadAsync('/textures/skybox/industrial_sunset_02_puresky_4k.hdr ');
   envMap.mapping = THREE.EquirectangularReflectionMapping;
-  player.scene.background = envMap;
+  // player.scene.background = envMap;
   player.scene.environment = envMap;
 
   // 创建弹窗的css2d模型
