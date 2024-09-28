@@ -17,7 +17,14 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import { Player } from '@/three';
 import * as THREE from 'three';
-import { EffectComposer, OutputPass, RenderPass, SMAAPass, RGBELoader } from 'three/examples/jsm/Addons.js';
+import {
+  EffectComposer,
+  OutputPass,
+  RenderPass,
+  SMAAPass,
+  RGBELoader,
+  UnrealBloomPass,
+} from 'three/examples/jsm/Addons.js';
 import LayoutScreen from '@/pages/components/LayoutScreen.vue';
 import Header from '@/pages/components/Header.vue';
 import Progress from '@/components/Progress.vue';
@@ -45,34 +52,27 @@ onMounted(async () => {
 
   const renderPass = new RenderPass(player.scene!, player.camera!);
   composer.addPass(renderPass);
-  //#region outlinePass
-  // outlinePass = new OutlinePass(
-  //   new THREE.Vector2(player.cavans.clientWidth, player.cavans.clientHeight),
-  //   player.scene,
-  //   player.camera!
-  // );
-  // outlinePass.visibleEdgeColor.set(effectParams.visibleEdgeColor);
-  // outlinePass.hiddenEdgeColor.set(effectParams.hiddenEdgeColor);
-  // outlinePass.pulsePeriod = effectParams.pulsePeriod;
-  // outlinePass.edgeGlow = effectParams.edgeGlow;
-  // outlinePass.edgeThickness = effectParams.edgeThickness;
-  // outlinePass.edgeStrength = effectParams.edgeStrength;
-  // composer.addPass(outlinePass);
-  const outputPass = new OutputPass();
-  composer.addPass(outputPass);
+
   const pixelRatio = player.renderer!.getPixelRatio();
   // width、height是canva画布的宽高度
   const { offsetWidth: width, offsetHeight: height } = player.cavans;
+
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(width, height), 1.5, 0.4, 0.85);
+  bloomPass.threshold = 1;
+  bloomPass.strength = 0.5;
+  bloomPass.radius = 0;
+  composer.addPass(bloomPass);
+  const outputPass = new OutputPass();
   const smaaPass = new SMAAPass(width * pixelRatio, height * pixelRatio);
   composer.addPass(smaaPass);
+  composer.addPass(outputPass);
 
-  //#endregion
   player.events.start.add(() => {
     console.log('start run play ');
   });
 
   loading.value = true;
-  const url = '/models/warehouse/scene.glb';
+  const url = '/models/warehouse2/scene.glb';
   const loadmanager = THREE.DefaultLoadingManager;
   // loadmanager.onLoad=()
   const scene = await player.loader.loadFile(url, loadmanager);
@@ -80,15 +80,15 @@ onMounted(async () => {
   player.addObject(scene);
   // 加载hdr材质 并设置环境光贴图
   const rgbeLoader = new RGBELoader();
-  const envMap = await rgbeLoader.loadAsync('/textures/skybox/clarens_midday_2k.hdr');
+  const envMap = await rgbeLoader.loadAsync('/textures/skybox/industrial_sunset_02_puresky_4k.hdr');
   envMap.mapping = THREE.EquirectangularReflectionMapping;
   player.scene.background = envMap;
   player.scene.environment = envMap;
-
+  player.scene.environmentIntensity = 1;
   // 创建弹窗的css2d模型
   // popoverObject = new CSS2DObject(popoverRef.value!);
 
-  player.renderer!.toneMapping = THREE.NeutralToneMapping;
+  player.renderer!.toneMapping = THREE.ACESFilmicToneMapping;
   player.renderer!.toneMappingExposure = 1;
   player.renderer!.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -100,26 +100,69 @@ onMounted(async () => {
     }
     if (item instanceof THREE.Mesh) {
       item.material.envMap = envMap;
-      item.material.envMapIntensity = 1;
+      item.material.envMapIntensity = 0.7;
       item.material.needsUpdate = true;
     }
   });
 
-  player.events.update.add(({ delta: _delta }) => {
-    // console.log('update', delta);
-    composer.render();
-  });
+  // const directionalLight = new THREE.DirectionalLight(0xffffff, 5);
+  // directionalLight.position.set(60, 30, 40);
+  // directionalLight.castShadow = true;
+  // directionalLight.shadow.camera.left = -100;
+  // directionalLight.shadow.camera.right = 100;
+  // directionalLight.shadow.camera.top = 100;
+  // directionalLight.shadow.camera.bottom = -100;
+  // directionalLight.shadow.camera.near = 0.5;
+  // directionalLight.shadow.camera.far = 100;
+  // directionalLight.shadow.mapSize.set(1024, 1024);
+  // directionalLight.shadow.radius = 2;
+  // player.addObject(directionalLight);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+  player.addObject(ambientLight);
+  const rectLight = new THREE.RectAreaLight(0xffffff, 1, 40, 8);
+  rectLight.power = 3000;
+  rectLight.castShadow = true;
+  // rectLight.shadow.mapSize.set(1024, 1024);
+  // rectLight.shadow.radius = 2;
+  rectLight.position.set(0, 8, 0);
+  rectLight.lookAt(0, 0, 0);
+  player.addObject(rectLight);
+  const rectLight2 = rectLight.clone();
+  rectLight2.position.set(40, 8, 0);
+  rectLight2.lookAt(40, 0, 0);
+  player.addObject(rectLight2);
+  const rectLight3 = rectLight.clone();
+  rectLight3.position.set(60, 8, 0);
+  rectLight3.lookAt(60, 0, 0);
+  player.addObject(rectLight3);
+  const rectLight4 = rectLight.clone();
+  rectLight4.position.set(-30, 8, 0);
+  rectLight4.lookAt(-30, 0, 0);
+  player.addObject(rectLight4);
+  const rectLight5 = rectLight.clone();
+  rectLight5.position.set(-50, 8, 0);
+  rectLight5.lookAt(-50, 0, 0);
+  player.addObject(rectLight5);
 
-  // player.controls?.addEventListener('change', (ev) => {
-  //   const dis = player.controls?.getDistance();
-  //   console.log('camera', dis, ev.target.object.position, player.camera!.position);
-  // });
-  player.controls!.maxDistance = 80;
-  player.camera!.position.set(44.46365982107533, 14.053705443625564, 39.61480688621657);
+  // initSky();
+  player.controls?.addEventListener('change', (ev) => {
+    const dis = player.controls?.getDistance();
+    console.log('camera', dis, ev.target.object.position, player.camera!.position);
+  });
+  player.controls!.maxDistance = 100;
+  player.controls!.minDistance = 2;
+  player.controls!.maxPolarAngle = THREE.MathUtils.degToRad(90); //Math.PI / 2 ;
+  player.controls!.minPolarAngle = THREE.MathUtils.degToRad(0);
+  // player.controls!.maxAzimuthAngle = THREE.MathUtils.degToRad(30);
+  // player.controls!.minAzimuthAngle = Math.PI / 2;
+
+  player.controls!.update();
+  player.camera!.position.set(-80.57485834297249, 7.603649398299234, 18.26664771648642);
   player.play();
 
   loading.value = false;
 });
+
 onUnmounted(() => {
   player?.dispose();
 });

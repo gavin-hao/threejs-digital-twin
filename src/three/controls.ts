@@ -44,12 +44,53 @@ class PlayerControls extends THREE.EventDispatcher<any> {
 
   private onClick(_event: MouseEvent) {}
   private onDoubleClick() {
-    this.orbitControls.reset();
+    this.reset();
   }
   private onPointerMove() {}
 
   public reset() {
-    this.orbitControls.reset();
+    // this.orbitControls.reset();
+    const camera = this.object;
+    const controls = this.orbitControls;
+
+    const target = controls.target0.clone();
+    const position = controls.position0.clone();
+
+    new TWEEN.Tween({
+      // target: controls.target,
+      tx: controls.target.x,
+      ty: controls.target.y,
+      tz: controls.target.z,
+      x: camera.position.x,
+      y: camera.position.y,
+      z: camera.position.z,
+      // position: controls.object.position,
+      // zoom: controls.object.,
+    })
+      .to(
+        {
+          tx: target.x,
+          ty: target.y,
+          tz: target.z,
+          x: position.x,
+          y: position.y,
+          z: position.z,
+          // target: target,
+          // position: position,
+          // zoom: zoom,
+        },
+        1000
+      )
+      .easing(Easing.Quadratic.Out)
+      .onUpdate(function (obj) {
+        // 动态改变相机位置
+        camera.position.set(obj.x, obj.y, obj.z);
+        // 动态计算相机视线
+        // camera.lookAt(obj.tx, obj.ty, obj.tz);
+        controls.target.set(obj.tx, obj.ty, obj.tz);
+        controls.update(); //内部会执行.lookAt()
+      })
+      .start();
   }
   public saveState() {
     this.orbitControls.saveState();
@@ -69,6 +110,36 @@ class PlayerControls extends THREE.EventDispatcher<any> {
   }
   set maxDistance(value: number) {
     this.orbitControls.maxDistance = value;
+  }
+  set minDistance(value: number) {
+    this.orbitControls.minDistance = value;
+  }
+  set dampingFactor(value: number) {
+    this.orbitControls.dampingFactor = value;
+  }
+  set enableDamping(value: boolean) {
+    this.orbitControls.enableDamping = value;
+  }
+  set autoRotate(value: boolean) {
+    this.orbitControls.autoRotate = value;
+  }
+  set autoRotateSpeed(value: number) {
+    this.orbitControls.autoRotateSpeed = value;
+  }
+  set maxPolarAngle(value: number) {
+    this.orbitControls.maxPolarAngle = value;
+  }
+  set minPolarAngle(value: number) {
+    this.orbitControls.minPolarAngle = value;
+  }
+  set minAzimuthAngle(value: number) {
+    this.orbitControls.minAzimuthAngle = value;
+  }
+  set maxAzimuthAngle(value: number) {
+    this.orbitControls.maxAzimuthAngle = value;
+  }
+  set enablePan(value: boolean) {
+    this.orbitControls.enablePan = value;
   }
   /**
    * 将相机聚焦到指定的物体，并拉近相机距离

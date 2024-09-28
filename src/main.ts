@@ -11,6 +11,9 @@ createApp(App).use(route).mount('#app');
       clientWidth = docEl.clientWidth;
     if (!clientWidth) return;
     docEl.style.fontSize = 100 * (clientWidth / 1920) + 'px';
+    if (clientWidth > 1920) {
+      docEl.style.fontSize = '100px';
+    }
   };
   if (!doc.addEventListener) return;
   win.addEventListener('resize', fn);

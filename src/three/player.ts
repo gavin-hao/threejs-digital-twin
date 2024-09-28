@@ -63,6 +63,7 @@ export class Player {
     this.scene.name = 'Scene';
     this.resizeObserver = new ResizeObserver((entries) => {
       const { width, height } = entries[0].contentRect;
+      console.log('resizeObserver===>', width, height);
       this.onResize(width, height);
     });
     this.resizeObserver.observe(this.dom);
@@ -73,6 +74,9 @@ export class Player {
   }
 
   private onResize(width: number, height: number) {
+    if (width <= 0 || height <= 0) {
+      return;
+    }
     this.setSize(width, height);
     this.setPixelRatio(window.devicePixelRatio);
 
@@ -99,7 +103,17 @@ export class Player {
   get cavans() {
     return this.renderer!.domElement;
   }
+  public enableShadows() {
+    this.renderer!.shadowMap.enabled = true;
+    this.renderer!.shadowMap.type = THREE.PCFSoftShadowMap;
 
+    this.scene.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+  }
   public addAnimation(animations: Array<THREE.AnimationClip>, animationName: string, target: THREE.Object3D) {
     const mixer = new THREE.AnimationMixer(target);
     const clip = THREE.AnimationClip.findByName(animations, animationName);
@@ -173,6 +187,9 @@ export class Player {
     this.renderer?.setPixelRatio(pixelRatio);
   }
   public setSize(width: number, height: number) {
+    if (width <= 0 || height <= 0) {
+      return;
+    }
     this.width = width;
     this.height = height;
 
@@ -196,10 +213,10 @@ export class Player {
     directionalLight.shadow.camera.right = 100;
     directionalLight.shadow.camera.top = 100;
     directionalLight.shadow.camera.bottom = -100;
-    directionalLight.shadow.camera.near = 0.5;
-    directionalLight.shadow.camera.far = 100;
-    directionalLight.shadow.mapSize.set(1024, 1024);
-    directionalLight.shadow.radius = 2;
+    directionalLight.shadow.camera.near = 1;
+    directionalLight.shadow.camera.far = 500;
+    directionalLight.shadow.mapSize.set(512, 512);
+    directionalLight.shadow.radius = 1;
     this.addObject(directionalLight);
     const ambientLight = new THREE.AmbientLight(0xfefefe, 0.8);
     // scene.value!.add(ambientLight);
@@ -281,7 +298,18 @@ export class Player {
   public dispose() {
     this.stop();
     this.renderer?.dispose();
-
+    // dispose all objects
+    this.scene?.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.geometry.dispose();
+        child.material.dispose();
+      }
+    });
+    this.scene.clear();
+    this.cavans.remove();
+    this.dom.remove();
+    this.resizeObserver.disconnect();
+    this.renderer = undefined;
     this.camera = undefined;
   }
   private getMousePosition(dom: HTMLElement, x: number, y: number) {
