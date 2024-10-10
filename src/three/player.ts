@@ -63,7 +63,7 @@ export class Player {
     this.scene.name = 'Scene';
     this.resizeObserver = new ResizeObserver((entries) => {
       const { width, height } = entries[0].contentRect;
-      console.log('resizeObserver===>', width, height);
+      // console.log('resizeObserver===>', width, height);
       this.onResize(width, height);
     });
     this.resizeObserver.observe(this.dom);

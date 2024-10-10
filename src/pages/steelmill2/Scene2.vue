@@ -55,7 +55,7 @@ const props = defineProps<{
 const { width: offsetWidth, height: offsetHeight } = useElementSize(viewport);
 watchEffect(() => {
   if (offsetWidth.value > 0 && offsetHeight.value > 0) {
-    console.log('setSize', offsetWidth.value, offsetHeight.value);
+    // console.log('setSize', offsetWidth.value, offsetHeight.value);
     // player.renderer?.clear();
 
     player.setSize(offsetWidth.value, offsetHeight.value);
@@ -65,7 +65,6 @@ watchEffect(
   () => {
     if (props.visible) {
       visibleModel(props.modelName);
-      player.controls?.reset();
       player.play();
     } else {
       player.stop();
@@ -89,6 +88,37 @@ function visibleModel(name?: string) {
       // console.log('visible', name, model);
 
       model.visible = true;
+      const focusObject = player.scene.getObjectByName(props.modelName || '');
+      let scalar = 6;
+      if (name === 'Dianhulu') {
+        scalar = 10;
+      }
+      if (name === 'Lianzhu') {
+        scalar = 8;
+      }
+      if (name === 'Zhongzhaji') {
+        scalar = 8;
+      }
+      if (name === 'Bianqieji') {
+        scalar = 10;
+      }
+      if (name === 'Cuzhaji') {
+        scalar = 5;
+      }
+      if (name === 'Jiarelu') {
+        scalar = 4;
+      }
+      if (name === 'zhuan_lu') {
+        scalar = 5;
+      }
+      if (name === 'Zhuzhaji') {
+        scalar = 5;
+      }
+      if (focusObject) {
+        player.controls?.focus2(focusObject, { scalar });
+      }
+      // player.controls?.reset();
+      // player.controls?.focus2(model);
     } else {
       model.visible = false;
     }
@@ -169,9 +199,8 @@ onMounted(async () => {
   }
 
   await loadModels();
-  visibleModel(props.modelName);
   models.forEach((model) => {
-    model.scale.multiplyScalar(0.3);
+    model.scale.multiplyScalar(0.4);
 
     player.addObject(model);
     if (['zhuan_lu', 'Jingzhaji'].includes(model.name)) {
@@ -193,6 +222,13 @@ onMounted(async () => {
   // player.controls?.addEventListener('change', (ev) => {
   //   console.log('camera', ev.target.target, ev.target.object.position, player.camera!.position);
   // });
+  player?.camera?.position.set(8.434432723983832, 9.526646692338861, 6.038920583677303);
+  player.controls?.saveState();
+  visibleModel(props.modelName);
+  // const focusObject = player.scene.getObjectByName(props.modelName || '');
+  // if (focusObject) {
+  //   player.controls?.focus2(focusObject,);
+  // }
   pmremGenerator = new THREE.PMREMGenerator(player.renderer!);
   pmremGenerator.compileEquirectangularShader();
   player.scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04, 0.01, 20).texture;
