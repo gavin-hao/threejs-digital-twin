@@ -331,7 +331,7 @@ function canSelect(object?: THREE.Object3D) {
 let chooseObject: THREE.Object3D | null = null;
 function onSelected(object?: THREE.Object3D) {
   const selectObject = (object as any).ancestors || object;
-  console.log('selectObject', selectObject);
+  // console.log('selectObject', selectObject);
 
   if (!selectObject || !canSelect(selectObject)) {
     outlinePass.selectedObjects = [];

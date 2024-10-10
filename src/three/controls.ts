@@ -221,11 +221,20 @@ class PlayerControls extends THREE.EventDispatcher<any> {
       .start();
   }
 
-  focus2(target: THREE.Object3D) {
+  focus2(
+    target: THREE.Object3D,
+    options?: {
+      scalar?: number;
+    }
+  ) {
+    const _DEFAULT_OPTIONS = {
+      scalar: 14,
+    };
+    const scalar = options?.scalar !== undefined ? options.scalar : _DEFAULT_OPTIONS.scalar;
     const pos = new THREE.Vector3();
     target.getWorldPosition(pos);
     // 相机飞行到的位置和观察目标拉开一定的距离
-    const endPos = pos.clone().addScalar(16);
+    const endPos = pos.clone().addScalar(scalar);
     const endTarget = pos;
     const camera = this.object;
     const controls = this.orbitControls;
