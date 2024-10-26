@@ -64,6 +64,7 @@ watchEffect(() => {
 watchEffect(
   () => {
     if (props.visible) {
+      player.controls?.reset(false);
       visibleModel(props.modelName);
       player.play();
     } else {
@@ -89,33 +90,42 @@ function visibleModel(name?: string) {
 
       model.visible = true;
       const focusObject = player.scene.getObjectByName(props.modelName || '');
-      let scalar = 6;
+      let scalar = 1.35;
       if (name === 'Dianhulu') {
-        scalar = 10;
+        scalar = 1.5;
       }
       if (name === 'Lianzhu') {
-        scalar = 8;
+        scalar = 1.5;
       }
       if (name === 'Zhongzhaji') {
-        scalar = 8;
+        scalar = 1.2;
       }
       if (name === 'Bianqieji') {
-        scalar = 10;
+        scalar = 1.6;
+      }
+      if (name === 'Zhengpingji') {
+        scalar = 1.5;
       }
       if (name === 'Cuzhaji') {
-        scalar = 5;
+        scalar = 1.2;
       }
       if (name === 'Jiarelu') {
-        scalar = 4;
+        scalar = 1.25;
       }
       if (name === 'zhuan_lu') {
-        scalar = 5;
+        scalar = 1.2;
       }
       if (name === 'Zhuzhaji') {
-        scalar = 5;
+        scalar = 1.2;
+      }
+      if (name === 'Jingzhaji') {
+        scalar = 1.4;
+      }
+      if (name === 'Duanqieji') {
+        scalar = 1.2;
       }
       if (focusObject) {
-        player.controls?.focus2(focusObject, { scalar });
+        player.controls?.focus(focusObject, { scalar });
       }
       // player.controls?.reset();
       // player.controls?.focus2(model);
@@ -217,13 +227,14 @@ onMounted(async () => {
   //   }
   // });
 
-  player.enableShadows();
-  player.controls!.autoRotate = true;
   // player.controls?.addEventListener('change', (ev) => {
   //   console.log('camera', ev.target.target, ev.target.object.position, player.camera!.position);
   // });
+  player.controls!.autoRotate = true;
   player?.camera?.position.set(8.434432723983832, 9.526646692338861, 6.038920583677303);
   player.controls?.saveState();
+
+  player.enableShadows();
   visibleModel(props.modelName);
   // const focusObject = player.scene.getObjectByName(props.modelName || '');
   // if (focusObject) {

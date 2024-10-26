@@ -245,10 +245,10 @@ onMounted(async () => {
     player.renderer!.shadowMap.type = THREE.VSMShadowMap;
 
     const cameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
-    player.scene.add(cameraHelper);
-    if (process.env.NODE_ENV !== 'development') {
-      cameraHelper.visible = false;
-    }
+    // player.scene.add(cameraHelper);
+    // if (process.env.NODE_ENV !== 'development') {
+    //   cameraHelper.visible = false;
+    // }
     const directionalLightGui = gui.addFolder('directionalLight');
     directionalLight.position.set(26, 48, 20);
     directionalLightGui.addColor(directionalLight, 'color').name('color');
@@ -315,6 +315,11 @@ onMounted(async () => {
   (player.camera! as THREE.PerspectiveCamera).far = 300;
   player.camera!.position.set(49.08655711956998, 15.013313129229896, 29.585290041126118);
   player.controls?.saveState();
+  const cameraHelper = new THREE.CameraHelper(player.camera!);
+  player.scene.add(cameraHelper);
+  if (process.env.NODE_ENV !== 'development') {
+    cameraHelper.visible = false;
+  }
   player.play();
 
   loading.value = false;

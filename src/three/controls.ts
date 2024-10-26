@@ -48,8 +48,11 @@ class PlayerControls extends THREE.EventDispatcher<any> {
   }
   private onPointerMove() {}
 
-  public reset() {
-    // this.orbitControls.reset();
+  public reset(animate: boolean = true) {
+    if (!animate) {
+      this.orbitControls.reset();
+      return;
+    }
     const camera = this.object;
     const controls = this.orbitControls;
 
@@ -150,6 +153,7 @@ class PlayerControls extends THREE.EventDispatcher<any> {
     target: THREE.Object3D,
     options?: {
       scalar?: number;
+      angle?: number;
     }
   ) {
     const _DEFAULT_OPTIONS = {
@@ -160,6 +164,8 @@ class PlayerControls extends THREE.EventDispatcher<any> {
 
     /** 相机位置与focus目标拉的偏移量 */
     const scalar = options?.scalar !== undefined ? options.scalar : _DEFAULT_OPTIONS.scalar;
+    const angle = options?.angle !== undefined ? options.angle : -Math.PI / 4;
+
     const box = new THREE.Box3();
     const center = new THREE.Vector3();
     const sphere = new THREE.Sphere();
@@ -174,8 +180,8 @@ class PlayerControls extends THREE.EventDispatcher<any> {
     const quaternion = new THREE.Quaternion();
     target.getWorldQuaternion(quaternion);
     quaternion.copy(camera.quaternion);
-    // //相机以45度角俯视
-    quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 4));
+
+    quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 1), angle));
     delta.set(0, 0, 1);
     delta.applyQuaternion(quaternion);
     delta.multiplyScalar(distance * scalar);
@@ -231,13 +237,21 @@ class PlayerControls extends THREE.EventDispatcher<any> {
       scalar: 14,
     };
     const scalar = options?.scalar !== undefined ? options.scalar : _DEFAULT_OPTIONS.scalar;
+    const camera = this.object;
+    const controls = this.orbitControls;
     const pos = new THREE.Vector3();
     target.getWorldPosition(pos);
     // 相机飞行到的位置和观察目标拉开一定的距离
     const endPos = pos.clone().addScalar(scalar);
+
+    // const quaternion = new THREE.Quaternion();
+    // target.getWorldQuaternion(quaternion);
+    // quaternion.copy(camera.quaternion);
+    // // //相机以45度角俯视
+    // quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 1), Math.PI / 4));
+    // endPos.applyQuaternion(quaternion);
     const endTarget = pos;
-    const camera = this.object;
-    const controls = this.orbitControls;
+
     const cameraStartPos = camera.position;
     const controlsPos = controls.target;
     new TWEEN.Tween({
