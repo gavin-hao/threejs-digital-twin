@@ -29,8 +29,7 @@
             :key="equips.Jiarelu.key"
             @click="handleClickStatus(equips.Jiarelu.key)"
           >
-            <div class="status-grid col-2">
-              <div><Statistic title="燃料" :max="10" :value="equips.Jiarelu.燃料.value" /></div>
+            <div class="status-grid col-1">
               <div><Temperature title="温度" :max="2000" :value="Number(equips.Jiarelu.温度.value)" /></div>
             </div>
           </Status>
@@ -42,7 +41,11 @@
             @click="handleClickStatus(equips.Tieshuiguan.key)"
           >
             <div class="status-grid">
-              <div><Temperature title="温度" :max="2000" :value="Number(equips.Tieshuiguan.温度.value)" /></div>
+              <div>
+                <Statistic title="容量" :max="10" :value="equips.Tieshuiguan.容量.value">
+                  <template v-slot:suffix>{{ equips.Tieshuiguan.容量.unit }}</template>
+                </Statistic>
+              </div>
             </div>
           </Status>
         </div>
@@ -55,8 +58,11 @@
             @click="handleClickStatus(equips.Zhuanlu.key)"
           >
             <div class="status-grid col-2">
-              <div><Statistic title="吹氧量" :max="2000" :value="equips.Zhuanlu.吹氧量.value" /></div>
-              <div><Statistic title="容量" :max="10" :value="equips.Zhuanlu.容量.value" /></div>
+              <div>
+                <Statistic title="利用系数" :max="2000" :value="equips.Zhuanlu.利用系数.value">
+                  <template v-slot:suffix>{{ equips.Zhuanlu.利用系数.unit }}</template>
+                </Statistic>
+              </div>
             </div>
           </Status>
           <Status
@@ -68,13 +74,8 @@
           >
             <div class="status-grid col-2">
               <div>
-                <Statistic title="电压" :max="10" :value="equips.Dianhulu.电压.value"
-                  ><template v-slot:suffix>A</template></Statistic
-                >
-              </div>
-              <div>
-                <Statistic title="电流" :value="equips.Dianhulu.电流.value"
-                  ><template v-slot:suffix>V</template></Statistic
+                <Statistic title="利用系数" :max="10" :value="equips.Dianhulu.利用系数.value"
+                  ><template v-slot:suffix>{{ equips.Dianhulu.利用系数.unit }}</template></Statistic
                 >
               </div>
             </div>
@@ -89,8 +90,11 @@
             @click="handleClickStatus(equips.Lianzhu.key)"
           >
             <div class="status-grid col-2">
-              <div><Statistic title="速度" :max="2000" :value="equips.Lianzhu.速度.value" /></div>
-              <div><Temperature title="温度" :max="2000" :value="Number(equips.Lianzhu.温度.value)" /></div>
+              <div>
+                <Statistic title="作业率" :max="2000" :value="equips.Lianzhu.作业率.value"
+                  ><template v-slot:suffix>{{ equips.Lianzhu.作业率.unit }}</template></Statistic
+                >
+              </div>
             </div>
           </Status>
           <Status
@@ -102,8 +106,8 @@
           >
             <div class="status-grid">
               <div>
-                <Statistic title="速度" :max="2000" :value="equips.Zhuzhaji.速度.value"
-                  ><template v-slot:suffix> m/s </template></Statistic
+                <Statistic title="平均小时产量" :max="2000" :value="equips.Zhuzhaji.平均小时产量.value"
+                  ><template v-slot:suffix>{{ equips.Zhuzhaji.平均小时产量.unit }} </template></Statistic
                 >
               </div>
             </div>
@@ -123,13 +127,8 @@
           >
             <div class="status-grid col-2">
               <div>
-                <Statistic title="功率" :max="10" :value="equips.Cuzhaji.功率.value"
-                  ><template v-slot:suffix>W</template></Statistic
-                >
-              </div>
-              <div>
-                <Statistic title="电压" :value="equips.Cuzhaji.电压.value"
-                  ><template v-slot:suffix>V</template></Statistic
+                <Statistic title="平均小时产量" :max="10" :value="equips.Cuzhaji.平均小时产量.value"
+                  ><template v-slot:suffix>{{ equips.Cuzhaji.平均小时产量.unit }}</template></Statistic
                 >
               </div>
             </div>
@@ -143,13 +142,8 @@
           >
             <div class="status-grid col-2">
               <div>
-                <Statistic title="功率" :max="2000" :value="equips.Zhongzhaji.功率.value">
-                  <template v-slot:suffix>W</template>
-                </Statistic>
-              </div>
-              <div>
-                <Statistic title="电压" :max="2000" :value="equips.Zhongzhaji.电压.value">
-                  <template v-slot:suffix>V</template>
+                <Statistic title="平均小时产量" :max="2000" :value="equips.Zhongzhaji.平均小时产量.value">
+                  <template v-slot:suffix>{{ equips.Zhongzhaji.平均小时产量.unit }}</template>
                 </Statistic>
               </div>
             </div>
@@ -165,13 +159,8 @@
           >
             <div class="status-grid col-2">
               <div>
-                <Statistic title="功率" :max="10" :value="equips.Jingzhaji.功率.value"
-                  ><template v-slot:suffix>W</template></Statistic
-                >
-              </div>
-              <div>
-                <Statistic title="电压" :value="equips.Jingzhaji.电压.value"
-                  ><template v-slot:suffix>V</template></Statistic
+                <Statistic title="平均小时产量" :max="10" :value="equips.Jingzhaji.平均小时产量.value"
+                  ><template v-slot:suffix>{{ equips.Jingzhaji.平均小时产量.unit }}</template></Statistic
                 >
               </div>
             </div>
@@ -185,13 +174,8 @@
           >
             <div class="status-grid col-2">
               <div>
-                <Statistic title="功率" :max="2000" :value="equips.Duanqieji.功率.value">
-                  <template v-slot:suffix>W</template>
-                </Statistic>
-              </div>
-              <div>
-                <Statistic title="电压" :max="2000" :value="equips.Duanqieji.电压.value">
-                  <template v-slot:suffix>V</template>
+                <Statistic title="平均小时产量" :max="2000" :value="equips.Duanqieji.平均小时产量.value">
+                  <template v-slot:suffix>{{ equips.Duanqieji.平均小时产量.unit }}</template>
                 </Statistic>
               </div>
             </div>
@@ -207,13 +191,8 @@
           >
             <div class="status-grid col-2">
               <div>
-                <Statistic title="功率" :max="10" :value="equips.Bianqieji.功率.value"
-                  ><template v-slot:suffix>W</template></Statistic
-                >
-              </div>
-              <div>
-                <Statistic title="电压" :value="equips.Bianqieji.电压.value"
-                  ><template v-slot:suffix>V</template></Statistic
+                <Statistic title="平均小时产量" :max="10" :value="equips.Bianqieji.平均小时产量.value"
+                  ><template v-slot:suffix>{{ equips.Bianqieji.平均小时产量.unit }}</template></Statistic
                 >
               </div>
             </div>
@@ -227,13 +206,8 @@
           >
             <div class="status-grid col-2">
               <div>
-                <Statistic title="功率" :max="2000" :value="equips.Zhengpingji.功率.value">
-                  <template v-slot:suffix>W</template>
-                </Statistic>
-              </div>
-              <div>
-                <Statistic title="电压" :max="2000" :value="equips.Zhengpingji.电压.value">
-                  <template v-slot:suffix>V</template>
+                <Statistic title="平均小时产量" :max="2000" :value="equips.Zhengpingji.平均小时产量.value">
+                  <template v-slot:suffix>{{ equips.Zhengpingji.平均小时产量.unit }}</template>
                 </Statistic>
               </div>
             </div>
@@ -249,13 +223,8 @@
           >
             <div class="status-grid col-2">
               <div>
-                <Statistic title="功率" :max="10" :value="equips.Panjuanji.功率.value"
-                  ><template v-slot:suffix>W</template></Statistic
-                >
-              </div>
-              <div>
-                <Statistic title="电压" :value="equips.Panjuanji.电压.value"
-                  ><template v-slot:suffix>V</template></Statistic
+                <Statistic title="平均小时产量" :max="10" :value="equips.Panjuanji.平均小时产量.value"
+                  ><template v-slot:suffix>{{ equips.Panjuanji.平均小时产量.unit }}</template></Statistic
                 >
               </div>
             </div>

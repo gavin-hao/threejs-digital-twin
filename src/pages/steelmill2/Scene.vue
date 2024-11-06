@@ -11,13 +11,26 @@
       v-show="showPopover"
       :style="{ '--width': `${popoverSize.width}px`, '--height': `${popoverSize.height}px` }"
     >
-      <div class="popover-content">
-        <div class="title">
-          {{ selectedObjectInfo?.name }}
-        </div>
-        <div class="body">
-          <scene2 :model-name="selectedObjectInfo?.key" :height="250" :width="434" :visible="showPopover"></scene2>
-          <span class="close" @click="handlePopoverClose">关闭</span>
+      <div class="popover-inner frame">
+        <div class="popover-content">
+          <div class="title">
+            {{ selectedObjectInfo?.name }}
+            <span class="close" @click="handlePopoverClose">&times;</span>
+          </div>
+          <div class="body">
+            <div class="canvas">
+              <scene2 :model-name="selectedObjectInfo?.key" :visible="showPopover"></scene2>
+            </div>
+            <div class="detail" v-if="selectedObjectInfo">
+              <div v-for="prop in Object.keys(selectedObjectInfo)" :key="prop">
+                <div v-if="prop !== 'name' && prop != 'key'">
+                  <label for="">{{ prop }}</label
+                  >{{ (selectedObjectInfo[prop] as any).value
+                  }}<span>{{ (selectedObjectInfo[prop] as any).unit }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -30,6 +43,7 @@ import { Player } from '@/three';
 import * as THREE from 'three';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import Stats from 'three/addons/libs/stats.module.js';
+import { useElementSize } from '@vueuse/core';
 import {
   CSS2DObject,
   EffectComposer,
@@ -86,25 +100,34 @@ const effectParams = {
   hiddenEdgeColor: '#190a05',
 };
 
-// const { width: viewportWidth, height: viewportHeight } = useElementSize(viewport);
+const { width: viewportWidth, height: viewportHeight } = useElementSize(viewport);
 const popoverSize = computed(() => {
-  let width = 458;
-  let height = 312;
-  // const ratio = 458 / 312;
+  let width = 600;
+  let height = 300;
+  const ratio = 2 / 1;
 
-  // if ((viewportWidth.value * 0.3) / viewportHeight.value > ratio) {
-  //   height = viewportHeight.value;
-  //   width = height * ratio;
-  // } else {
-  //   width = viewportWidth.value * 0.3;
-  //   height = width / ratio;
-  // }
+  if ((viewportWidth.value * 0.45) / viewportHeight.value > ratio) {
+    height = viewportHeight.value;
+    width = height * ratio;
+  } else {
+    width = viewportWidth.value * 0.45;
+    height = width / ratio;
+  }
+  width >= 800 ? (width = 800) : width;
+  height >= 400 ? (height = 400) : height;
   return {
     width,
     height,
   };
 });
-
+// const popoverInfo = computed(() => {
+//   equipmentInfos.value.forEach((item) => {
+//     if (item.key === selectedObjectInfo.value?.key) {
+//       selectedObjectInfo.value = item;
+//     }
+//   });
+//   return {};
+// });
 onMounted(async () => {
   // intersectObjects = [];
 
@@ -315,11 +338,11 @@ onMounted(async () => {
   (player.camera! as THREE.PerspectiveCamera).far = 300;
   player.camera!.position.set(49.08655711956998, 15.013313129229896, 29.585290041126118);
   player.controls?.saveState();
-  const cameraHelper = new THREE.CameraHelper(player.camera!);
-  player.scene.add(cameraHelper);
-  if (process.env.NODE_ENV !== 'development') {
-    cameraHelper.visible = false;
-  }
+  // const cameraHelper = new THREE.CameraHelper(player.camera!);
+  // player.scene.add(cameraHelper);
+  // if (process.env.NODE_ENV !== 'development') {
+  //   cameraHelper.visible = false;
+  // }
   player.play();
 
   loading.value = false;
@@ -406,7 +429,12 @@ onUnmounted(() => {
     transform: translate(-50%, -50%);
   }
 }
+
 .popover {
+  --background-color: rgba(45, 56, 85, 0.5);
+  --boder-color: rgba(154, 166, 183, 0.5);
+  --box-shadow-color: rgb(101, 219, 251, 0.38);
+  --border-frame-color: rgb(40, 214, 140);
   position: absolute;
   // width: min(40vw, 916px);
   // height: min(calc(312 / 458 * 40vw), 624px);
@@ -415,41 +443,130 @@ onUnmounted(() => {
   // left: 150px;
   top: 50%;
   left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  justify-self: stretch;
   width: var(--width, 458px);
   height: var(--height, 312px);
-  background: url(@/assets/images/dialog-bg.png) no-repeat;
-  background-size: contain;
+  // background: url(@/assets/images/dialog-bg.png) no-repeat;
+  // background-size: contain;
   transform: translate(-50%, -50%);
+  .popover-inner {
+    position: relative;
+    display: flex;
+    // background-color: rgb(7, 84, 140, 0.3);
+    flex: auto;
+    flex-direction: column;
+    align-self: stretch;
+    justify-self: stretch;
+    padding: 0;
+    backdrop-filter: blur(2px);
+    border: 2px solid var(--boder-color);
+    box-shadow: inset 0 0 30px var(--box-shadow-color);
+  }
+  .frame {
+    background:
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -4px top -8px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -4px top -4px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -4px top -8px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -4px top -4px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -4px bottom -8px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) left -4px bottom -4px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -4px bottom -8px,
+      linear-gradient(var(--border-frame-color), var(--border-frame-color)) right -4px bottom -4px;
+    background-repeat: no-repeat;
+    background-size:
+      4px 44px,
+      44px 4px;
+    box-shadow:
+      // inset 0 0 10px 2px var(--box-shadow-color),
+      inset 0 0 20px 10px var(--box-shadow-color),
+      inset 0 0 40px 30px var(--box-shadow-color);
+    &::after {
+      position: absolute;
+      top: 0px;
+      right: -0px;
+      bottom: -0px;
+      left: -0px;
+      z-index: -1;
+      content: '';
+      background-color: var(--background-color);
+    }
+  }
   .popover-content {
     position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
     color: #fff;
+
     .title {
+      position: relative;
       padding: 1px;
       font-size: 16px;
+      font-weight: 500;
       line-height: 36px;
       text-align: center;
-    }
-    .body {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      padding: 12px;
-      font-size: 20px;
+      &::after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        content: '';
+        background-image: linear-gradient(
+          244deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgb(42, 227, 243) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+      }
       .close {
         position: absolute;
         right: 5px;
-        bottom: 5px;
+        // bottom: 5px;
         display: inline-block;
-        padding: 5px;
-        font-size: 14px;
+        padding: 0 8px;
+        font-size: 18px;
         color: #dedede;
         cursor: pointer;
         &:hover {
           color: #fff;
-          text-decoration: underline;
+          // text-decoration: underline;
+        }
+      }
+    }
+    .body {
+      display: flex;
+      flex: 1;
+      flex-direction: row;
+      // padding: 12px;
+      font-size: 20px;
+      .canvas {
+        flex: auto;
+        max-width: 60%;
+      }
+      .detail {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        padding: 12px;
+        font-size: 20px;
+        color: #e0e0e0;
+        label {
+          margin-right: 16px;
+          font-weight: 500;
+          color: #fff;
+          &::after {
+            content: ':';
+          }
+        }
+        span {
+          margin-left: 5px;
+          font-size: 16px;
         }
       }
     }

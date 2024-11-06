@@ -90,40 +90,40 @@ function visibleModel(name?: string) {
 
       model.visible = true;
       const focusObject = player.scene.getObjectByName(props.modelName || '');
-      let scalar = 1.35;
-      if (name === 'Dianhulu') {
-        scalar = 1.5;
-      }
-      if (name === 'Lianzhu') {
-        scalar = 1.5;
-      }
-      if (name === 'Zhongzhaji') {
-        scalar = 1.2;
-      }
-      if (name === 'Bianqieji') {
-        scalar = 1.6;
-      }
-      if (name === 'Zhengpingji') {
-        scalar = 1.5;
-      }
-      if (name === 'Cuzhaji') {
-        scalar = 1.2;
-      }
-      if (name === 'Jiarelu') {
-        scalar = 1.25;
-      }
-      if (name === 'zhuan_lu') {
-        scalar = 1.2;
-      }
-      if (name === 'Zhuzhaji') {
-        scalar = 1.2;
-      }
-      if (name === 'Jingzhaji') {
-        scalar = 1.4;
-      }
-      if (name === 'Duanqieji') {
-        scalar = 1.2;
-      }
+      let scalar = 1.5;
+      // if (name === 'Dianhulu') {
+      //   scalar = 1.5;
+      // }
+      // if (name === 'Lianzhu') {
+      //   scalar = 1.5;
+      // }
+      // if (name === 'Zhongzhaji') {
+      //   scalar = 1.2;
+      // }
+      // if (name === 'Bianqieji') {
+      //   scalar = 1.6;
+      // }
+      // if (name === 'Zhengpingji') {
+      //   scalar = 1.5;
+      // }
+      // if (name === 'Cuzhaji') {
+      //   scalar = 1.2;
+      // }
+      // if (name === 'Jiarelu') {
+      //   scalar = 1.5;
+      // }
+      // if (name === 'zhuan_lu') {
+      //   scalar = 1.2;
+      // }
+      // if (name === 'Zhuzhaji') {
+      //   scalar = 1.2;
+      // }
+      // if (name === 'Jingzhaji') {
+      //   scalar = 1.4;
+      // }
+      // if (name === 'Duanqieji') {
+      //   scalar = 1.2;
+      // }
       if (focusObject) {
         player.controls?.focus(focusObject, { scalar });
       }
@@ -145,16 +145,16 @@ onMounted(async () => {
   // const grid = new THREE.GridHelper(30, 15, 0xcccccc, 0x999999);
   // player.scene.add(grid);
   // ground
-  {
-    const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(30, 30, 1, 1),
-      new THREE.MeshPhongMaterial({ color: 0xa0adaf, shininess: 150 })
-    );
+  // {
+  //   const ground = new THREE.Mesh(
+  //     new THREE.PlaneGeometry(30, 30, 1, 1),
+  //     new THREE.MeshPhongMaterial({ color: 0xa0adaf, shininess: 150 })
+  //   );
 
-    ground.rotation.x = -Math.PI / 2; // rotates X/Y to X/Z
-    ground.receiveShadow = true;
-    player.scene.add(ground);
-  }
+  //   ground.rotation.x = -Math.PI / 2; // rotates X/Y to X/Z
+  //   ground.receiveShadow = true;
+  //   player.scene.add(ground);
+  // }
   // Lights
   {
     const ambientLight = new THREE.AmbientLight(0xffffff, 2);
@@ -165,7 +165,7 @@ onMounted(async () => {
     spotLight.angle = Math.PI / 4;
     spotLight.penumbra = 0.2;
     spotLight.position.set(0, 8, 3);
-    spotLight.castShadow = true;
+    spotLight.castShadow = false;
     spotLight.shadow.camera.near = 3;
     spotLight.shadow.camera.far = 30;
     spotLight.shadow.mapSize.width = 1024;
@@ -267,6 +267,6 @@ onUnmounted(() => {
 #popover-viewport {
   width: 100%;
   height: 100%;
-  backdrop-filter: blur(5px);
+  // backdrop-filter: blur(5px);
 }
 </style>
