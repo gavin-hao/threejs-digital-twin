@@ -23,8 +23,8 @@ const slots = useSlots();
 </script>
 <style lang="scss" scoped>
 .status-container {
-  --body-text-color: #0ff37b;
-  --border-frame-color: #0ff37b;
+  --body-text-color: #28d68c;
+  --border-frame-color: #28d68c;
   --background-color: rgba(7, 85, 140, 0.3);
   --boder-color: rgba(99, 145, 180, 0.3);
   --box-shadow-color: rgba(5, 157, 222, 0.25);
