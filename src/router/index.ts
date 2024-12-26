@@ -34,13 +34,13 @@ export const routes = [
   //   meta: { title: 'X仓库数字孪生' },
   //   component: () => import('@/pages/warehouse/Index.vue'),
   // },
-  {
-    name: 'test',
-    path: '/test',
-    meta: { title: 'test' },
-    props: { visible: true, modelName: 'Zhongzhaji' },
-    component: () => import('@/pages/steelmill2/Scene2.vue'),
-  },
+  // {
+  //   name: 'test',
+  //   path: '/test',
+  //   meta: { title: 'test' },
+  //   props: { visible: true, modelName: 'Zhongzhaji' },
+  //   component: () => import('@/pages/steelmill2/Scene2.vue'),
+  // },
 ];
 
 const router = createRouter({
